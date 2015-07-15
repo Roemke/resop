@@ -64,13 +64,13 @@ class mod_resop_mod_form extends moodleform_mod {
 
         // Adding the rest of resop settings, spreading all them into this fieldset
         // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('static', 'label1', 'resopsetting1', 'Your resop fields go here. Replace me!');
+        //$mform->addElement('static', 'label1', 'resopsetting1', 'Your resop fields go here. Replace me!');
 
         $mform->addElement('header', 'resopfieldset', get_string('resopfieldset', 'resop'));
-        $mform->addElement('static', 'label2', 'resopsetting2', 'Your resop fields go here. Replace me!');
+        $mform->addElement('static', 'label1', get_string('resoptypestring', 'resop'))	;
 
         // Add standard grading elements.
-        $this->standard_grading_coursemodule_elements();
+        //$this->standard_grading_coursemodule_elements();
 
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();

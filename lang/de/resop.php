@@ -16,30 +16,34 @@
 
 
 /**
- * English strings for resop
+ * German strings for resop
+ * is located in lang/de of module - but nobody uses this structure
+ * all strings are located in a separate lang dir of moodle data 
+ * right way - don't know
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
  * @package    mod_resop
- * @copyright  2015 Your Name
+ * @copyright  2015 Karsten Roemke
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'Resource Planner';
-$string['modulenameplural'] = 'Resource Planner';
-$string['modulename_help'] = 'Simple Module to plan resources, first version should allow : written examinations';
-$string['resopfieldset'] = 'Type of resource';
+$string['modulename'] = 'Ressourcen Planer';
+$string['modulenameplural'] = 'Ressource Planer';
+$string['modulename_help'] = 'Modul um Resourcen zu planen, gedacht zunächst für Klassenarbeiten';
+$string['resopfieldset'] = 'Art der Ressource';
 $string['resopname'] = 'Name';
-$string['resopname_help'] = 'name of module';
+$string['resopname_help'] = 'Name des Planers (nach Belieben)';
 $string['resop'] = 'resop';
 $string['pluginadministration'] = 'resop administration';
-$string['pluginname'] = 'resop';
+$string['pluginname'] = 'Resourcen Planer';
 
-$string['resoptypestring'] = 'Type';
-$string['display'] = 'Create Resource Planner';
-$string['contentheader'] = 'Content';
-$string['typeall'] = 'every resource';
-$string['typeexam'] = 'only written examina';
+$string['resoptypestring'] = 'Art';
+$string['display'] = 'Ressourcen Planer erstellen';
+$string['contentheader'] = 'Inhalt';
+$string['typeall'] = 'Beliebige Ressource wählbar';
+$string['typeexam'] = 'Klassenarbeiten';
+

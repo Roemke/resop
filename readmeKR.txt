@@ -21,3 +21,9 @@ beim aktualisieren der db noch ein fehler, in resource_user geht autosequence
 nur, wenn primaer-schluessel -> im xml file geaendert
 
 schiebe es mal auf github
+
+2015-07-15 
+experimentiere mit den lang-files, sie sollten nach resop/lang/de - andere
+module haben sie unter moodleused/... ?
+
+Caching abschalten: https://docs.moodle.org/dev/Developer_Mode
