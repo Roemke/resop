@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['modulename'] = 'Ressourcen Planer';
 $string['modulenameplural'] = 'Ressource Planer';
 $string['modulename_help'] = 'Modul um Resourcen zu planen, gedacht zunächst für Klassenarbeiten';
-$string['resopfieldset'] = 'Art der Ressource';
+$string['resopfieldset'] = 'Feineinstellungen, wichtig';
 $string['resopname'] = 'Name';
 $string['resopname_help'] = 'Name des Planers (nach Belieben)';
 $string['resop'] = 'resop';
@@ -44,6 +44,12 @@ $string['pluginname'] = 'Resourcen Planer';
 $string['resoptypestring'] = 'Art';
 $string['display'] = 'Ressourcen Planer erstellen';
 $string['contentheader'] = 'Inhalt';
-$string['typeall'] = 'Beliebige Ressource wählbar';
+$string['typeall'] = 'Beliebige Ressource wählbar (funktioniert noch nicht)';
 $string['typeexam'] = 'Klassenarbeiten';
+$string['listofresources'] = 'Liste der Ressourcen';
+$string['listofresources_help'] = 'Liste der ressourcen welche verfügbar sein sollen, '.
+'name und Abteilung comma-separiert, zb am112,GTA oder fo115,FOS jede Zeile ist eine resource.<br>'.
+'Für den Typ Klassenarbeit sind hier die Klassen aufzuführen';
+$string['abteilungen']="Mindestens eine Abteilung angeben, zu der die Ressourcen gehören können.";
+
 

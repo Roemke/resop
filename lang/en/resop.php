@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['modulename'] = 'Resource Planner';
 $string['modulenameplural'] = 'Resource Planner';
 $string['modulename_help'] = 'Simple Module to plan resources, first version should allow : written examinations';
-$string['resopfieldset'] = 'Type of resource';
+$string['resopfieldset'] = 'Fine-Tuning, important';
 $string['resopname'] = 'Name';
 $string['resopname_help'] = 'name of module';
 $string['resop'] = 'resop';
@@ -41,5 +41,11 @@ $string['pluginname'] = 'resop';
 $string['resoptypestring'] = 'Type';
 $string['display'] = 'Create Resource Planner';
 $string['contentheader'] = 'Content';
-$string['typeall'] = 'every resource';
+$string['typeall'] = 'every resource (does not work)';
 $string['typeexam'] = 'only written examina';
+$string['listofresources'] = 'list of resources';
+$string['listofresources_help'] = 'List of resources which should be available, '.
+'name and departement comma-separated, dg am112,GTA or fo115,FOS ich line is one resource.<br>'.
+'For type written exame you have to note the class names.';
+$string['abteilungen']="At least one departement, the resource belongs to";
+	   

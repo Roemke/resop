@@ -25,6 +25,7 @@
     <TABLE NAME="resop_abt" COMMENT="Abteilungen">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="actid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
@@ -34,6 +35,7 @@
     <TABLE NAME="resop_resource" COMMENT="Resources">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="actid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="anzahl" TYPE="int" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
@@ -47,6 +49,7 @@
     <TABLE NAME="resop_user" COMMENT="User">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="actid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
@@ -57,6 +60,7 @@
       <FIELDS>
         <FIELD NAME="uid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="resid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="actid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="creation" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Creation of entry, datetime"/>
         <FIELD NAME="termin" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="date and time for which the resource is planned"/>
       </FIELDS>

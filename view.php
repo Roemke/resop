@@ -77,7 +77,7 @@ if ($resop->intro) {
 }
 
 // Replace the following lines with you own code.
-echo $OUTPUT->heading('Yay! It works!');
-
+echo $OUTPUT->heading(get_string('modulename','resop'));
+echo "wird das angezeigt - ja";//also hier nur anzeige und ggf Äenderungen
 // Finish the page.
 echo $OUTPUT->footer();

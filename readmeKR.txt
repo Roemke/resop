@@ -27,3 +27,20 @@ experimentiere mit den lang-files, sie sollten nach resop/lang/de - andere
 module haben sie unter moodleused/... ?
 
 Caching abschalten: https://docs.moodle.org/dev/Developer_Mode
+
+2015-08-09
+erweiterung, fuege eine spalte in db hinzu, nein doch nicht noetig,
+der user ist derjenige, für den eingetragen wird, also den Besitzer
+der resource
+hmm hatte in mod_form schon geaendert, dass man zwischen KA und "normaler
+Ressource" wählen kann
+(aenderungen an der sprachdatei funktionieren nicht - wahrscheinlich muss
+man cache leeren, dachte waere aus) - ja ist so 
+
+2015-08-22
+viel gespielt, jetzt entschieden die aktuelle id eines resop-eintrags mit
+in die Tabellen aufzunehmen und die konfiguration nicht global sondern 
+pro Objekt zu machen, damit faellt Settings aus. ..
+lasse die Datei mal drin damit ich mich daran erinnere
+in den tabellen wird dann jeweils die id des aktuellen eintrags mit
+uebernommen, so dass loeschen ohne weiteres funktioniert.

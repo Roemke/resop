@@ -25,7 +25,7 @@
  * Moodle is performing actions across all modules.
  *
  * @package    mod_resop
- * @copyright  2015 Your Name
+ * @copyright  2015 Karsten Römke
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,8 +33,11 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Example constant, you probably want to remove this :-)
- */
+ * no - why :-)
+ * */
 define('NEWMODULE_ULTIMATE_ANSWER', 42);
+
+require_once("$CFG->dirroot/mod/resop/db/ownDB.php");
 
 /* Moodle core API */
 
@@ -54,7 +57,7 @@ function resop_supports($feature) {
         case FEATURE_SHOW_DESCRIPTION:
             return true;
         case FEATURE_GRADE_HAS_GRADE:
-            return true;
+            return false; //kr changed, no grading
         case FEATURE_BACKUP_MOODLE2:
             return true;
         default:
@@ -77,14 +80,16 @@ function resop_supports($feature) {
 function resop_add_instance(stdClass $resop, mod_resop_mod_form $mform = null) {
     global $DB;
 
-    $resop->timecreated = time();
+    $resop->timecreated = time();  
 
     // You may have to add extra stuff in here.
 
     $resop->id = $DB->insert_record('resop', $resop);
 
     resop_grade_item_update($resop);
-
+    $formContent = $mform->get_data();
+    ResopDB::insertResop($resop->id, $formContent);
+		
     return $resop->id;
 }
 
@@ -110,7 +115,6 @@ function resop_update_instance(stdClass $resop, mod_resop_mod_form $mform = null
     $result = $DB->update_record('resop', $resop);
 
     resop_grade_item_update($resop);
-
     return $result;
 }
 
@@ -134,7 +138,7 @@ function resop_delete_instance($id) {
     // Delete any dependent records here.
 
     $DB->delete_records('resop', array('id' => $resop->id));
-
+	ResopDB::deleteResop($resop->id);
     resop_grade_item_delete($resop);
 
     return true;
