@@ -44,3 +44,20 @@ pro Objekt zu machen, damit faellt Settings aus. ..
 lasse die Datei mal drin damit ich mich daran erinnere
 in den tabellen wird dann jeweils die id des aktuellen eintrags mit
 uebernommen, so dass loeschen ohne weiteres funktioniert.
+
+dennoch settings - hier können die Abteilungen, benutzer und Ressourcen
+voreingestellt werden, die müssen dann nicht in eine db sondern können
+in der konfig von moodle gespeichert werden
+
+ein Planer ist allerdings nur fuer eine Abteilung geeignet, baue tabellen
+nochmal neu
+n:1 Planer Abteilung
+n:m Planer User
+n:m user resource (ist die Buchung)
+1:n Planer ressource
+
+damit sind ressourcen nicht über planer hinweg eindeutig
+sollte so passen, ressource gehört damit nicht Zu abteilung 
+sondern zu Planer
+
+

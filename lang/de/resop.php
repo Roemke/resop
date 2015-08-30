@@ -41,15 +41,26 @@ $string['resop'] = 'resop';
 $string['pluginadministration'] = 'resop administration';
 $string['pluginname'] = 'Resourcen Planer';
 
+//fuer die Settings admin / einzelne resop aktivität
+$string['listofresources'] = 'Liste der Ressourcen'; //beides
+$string['listofresources_default_help'] = 'Vorgabe für die Liste der ressourcen welche verfügbar sein sollen, '.
+'Jede Zeile enthält einer Ressource.<br>'.
+'Will man Klassenarbeiten verwalten, bietet es sich an, hier die Klassen aufzuführen.<br>'.
+'Fügt man eine Resop-Aktivität hinzu kann man die Liste erweitern'; //admin setting
+$string['listofresources_help'] = 'Resourcen, die in dieser Aktivität verwendet werden können.'; //module settings
+
+$string['listofusers']="Nutzer";
+$string['listofusers_help']='Nutzer, die eine Ressource buchen können, Multiselect sinnvoll.';
+
+$string['listofdepartements']="Abteilungen";
+$string['listofdepartements_help']='Abteilungen, vergleiche Resourcen';
 $string['resoptypestring'] = 'Art';
+$string['departement']='Abteilung';
+//---------------------------------------
 $string['display'] = 'Ressourcen Planer erstellen';
 $string['contentheader'] = 'Inhalt';
 $string['typeall'] = 'Beliebige Ressource wählbar (funktioniert noch nicht)';
 $string['typeexam'] = 'Klassenarbeiten';
-$string['listofresources'] = 'Liste der Ressourcen';
-$string['listofresources_help'] = 'Liste der ressourcen welche verfügbar sein sollen, '.
-'name und Abteilung comma-separiert, zb am112,GTA oder fo115,FOS jede Zeile ist eine resource.<br>'.
-'Für den Typ Klassenarbeit sind hier die Klassen aufzuführen';
-$string['abteilungen']="Mindestens eine Abteilung angeben, zu der die Ressourcen gehören können.";
+
 
 

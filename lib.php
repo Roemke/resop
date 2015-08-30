@@ -80,8 +80,9 @@ function resop_supports($feature) {
 function resop_add_instance(stdClass $resop, mod_resop_mod_form $mform = null) {
     global $DB;
 
-    $resop->timecreated = time();  
-
+    $resop->timecreated = time();
+	  
+	$resop->abt_id = $abtId; //selectfeld sollte als value die id haben	
     // You may have to add extra stuff in here.
 
     $resop->id = $DB->insert_record('resop', $resop);

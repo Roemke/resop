@@ -25,26 +25,69 @@
  
  class ResopDB
  {
- 		public static function actualizeClasses()
+ 		//synch users and 	
+ 		/*
+		 * data: array with usernames
+		 */
+ 		public static function synchDBUsers($data)
 		{
-			global $CFG, $DB;
-	 		$resultDB = $DB->get_records_sql('select * from {resop_resource}');
-	        
-	        $inCFG = explode("\n", $CFG->resop_resources);
-    	    foreach ($inCFG as $key => $value) {
-    	    	list($name,$type) = explode(",", $value);
-				
-        	    $sql = "insert into {resop_resource} (name, klasse) values ('$value','klasse') ";			
-        	}			
+			global $DB;
+			foreach ($data as $key => $value) {
+				if (!$DB->record_exists('resop_user',array('name' => $value)))
+				{
+					$record = new stdClass();
+					$record->name = $value;
+					$DB->insert_record('resop_user', $record, false);//true returns id
+				}	
+			}
 		}
- 	    //resop eingefuegt, also eigene DB-Eintraege
+ 		/*
+		 * data: array with departements
+		 */
+ 		public static function synchDBDepartements($data)
+		{
+			global $DB;
+			foreach ($data as $key => $value) {
+				if (!$DB->record_exists('resop_abt',array('name' => $value)))
+				{
+					$record = new stdClass();
+					$record->name = $value;
+					$DB->insert_record('resop_abt', $record, false);//true returns id
+				}	
+			}
+		}
+		
+		//liefert array mit index aus der DB und name aus der DB
+		public static function getDepartements()
+		{
+			global $DB;
+			return $DB->get_records_menu('resop_abt');
+		}
+		//liefert array mit index aus der DB und name aus der DB
+		public static function getUser()
+		{
+			global $DB;
+			return $DB->get_records_menu('resop_user');
+		}
+		
 		public static function insertResop($id, $formContent)
 		{
 			global $DB;	
-			$abt = explode("\n",$formContent->resop_abteilungen);
+			$abt = $formContent->resop_departement;
 			$type = $formContent->resop_type;
 			$resources = explode("\n",$formContent->resop_resources); 
+			$users = explode("\n",$formContent->resop_users);
 			$abtIds = array();
+			
+			//hole die Abteilung aus der DB wenn sie vorhanden ist
+			$abtInDB=$DB->get_record('resop_abt', array('name'=>$abt));//, $fields='*', $strictness=IGNORE_MISSING) 
+			$record = new stdClass();
+			$record->name = $abt;
+			if (!$abtInDb)
+			{
+			}
+			//bearbeite die Usertabelle, wenn User vorhanden ordne ihn dem  
+			//aktuellen Planer zu 
 			foreach ($abt as $key => $value) {
 				$record = new stdClass();
 				$record->name         = trim($value);
@@ -56,9 +99,7 @@
 			foreach ($resources as $key => $value)
 			{
 				$record = new stdClass();
-				list ($name,$abt) = explode(",",$value);
-				$name = trim($name);
-				$abt = trim($abt); //strange trim noetig
+				$name = trim($value); //strange trim noetig
 				$record->name = $name;
 				$record->abt_id = $abtIds[$abt];
 				$record->type = $type;
