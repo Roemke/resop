@@ -40,7 +40,6 @@
 					$DB->insert_record('resop_user', $record, false);//true returns id
 				}	
 			}
-<<<<<<< HEAD
 		}
  		/*
 		 * data: array with departements
@@ -64,8 +63,7 @@
 			global $DB;
 			return $DB->get_records_menu('resop_abt');
 		}
-=======
-		}
+		
  		/*
 		 * data: array with departements
 		 */
@@ -88,7 +86,6 @@
 			global $DB;
 			return $DB->get_records_menu('resop_abt');
 		}
->>>>>>> e567b9e62051c5162b934f393f99b4373087fbf6
 		//liefert array mit index aus der DB und name aus der DB
 		public static function getUser()
 		{
@@ -96,7 +93,6 @@
 			return $DB->get_records_menu('resop_user');
 		}
 		
-<<<<<<< HEAD
 		public static function insertResop(stdClass &$resop, $formContent)
 		{
 			global $DB;	
@@ -112,27 +108,6 @@
 			$users = $formContent->resop_users;
 			$records  = array();
 			foreach ($users as $key => $value) {
-=======
-		public static function insertResop($id, $formContent)
-		{
-			global $DB;	
-			$abt = $formContent->resop_departement;
-			$type = $formContent->resop_type;
-			$resources = explode("\n",$formContent->resop_resources); 
-			$users = explode("\n",$formContent->resop_users);
-			$abtIds = array();
-			
-			//hole die Abteilung aus der DB wenn sie vorhanden ist
-			$abtInDB=$DB->get_record('resop_abt', array('name'=>$abt));//, $fields='*', $strictness=IGNORE_MISSING) 
-			$record = new stdClass();
-			$record->name = $abt;
-			if (!$abtInDb)
-			{
-			}
-			//bearbeite die Usertabelle, wenn User vorhanden ordne ihn dem  
-			//aktuellen Planer zu 
-			foreach ($abt as $key => $value) {
->>>>>>> e567b9e62051c5162b934f393f99b4373087fbf6
 				$record = new stdClass();
 				$record->actid = $resop->id;
 				$record->uid = $value;

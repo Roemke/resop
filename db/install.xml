@@ -15,10 +15,7 @@
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100" SEQUENCE="false" COMMENT="The maximum grade. Can be negative to indicate the use of a scale."/>
         <FIELD NAME="id_abt" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100" SEQUENCE="false" COMMENT="The maximum grade. Can be negative to indicate the use of a scale."/>
-<<<<<<< HEAD
         <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
-=======
->>>>>>> e567b9e62051c5162b934f393f99b4373087fbf6
       </FIELDS>     
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -42,11 +39,6 @@
         <FIELD NAME="actid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="anzahl" TYPE="int" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
-<<<<<<< HEAD
-=======
-        <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
->>>>>>> e567b9e62051c5162b934f393f99b4373087fbf6
-        <!-- <FIELD NAME="abt_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>-->
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

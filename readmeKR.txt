@@ -60,4 +60,11 @@ damit sind ressourcen nicht über planer hinweg eindeutig
 sollte so passen, ressource gehört damit nicht Zu abteilung 
 sondern zu Planer
 
-
+2015-08-30 Mist man sollte wenn man müde ist nicht mit commit --amend
+arbeiten, hab mir den Kram zerschossen und muss jetzt die merges wieder 
+gerade biegen
+Conflicts:
+        db/install.xml
+        db/ownDB.php
+        lib.php
+ok, glaube ich habe das wieder hergestellt
