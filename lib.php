@@ -81,7 +81,12 @@ function resop_add_instance(stdClass $resop, mod_resop_mod_form $mform = null) {
     global $DB;
 
     $resop->timecreated = time();
+<<<<<<< HEAD
     $formContent = $mform->get_data();
+=======
+	  
+	$resop->abt_id = $abtId; //selectfeld sollte als value die id haben	
+>>>>>>> e567b9e62051c5162b934f393f99b4373087fbf6
     // You may have to add extra stuff in here.
 
     ResopDB::insertResop($resop,$formContent);
