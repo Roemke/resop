@@ -38,14 +38,28 @@ $string['resop'] = 'resop';
 $string['pluginadministration'] = 'resop administration';
 $string['pluginname'] = 'resop';
 
+
+// for the settings
+$string['listofresources'] = 'List of resources';//both
+$string['listofresources_default_help'] = 'Default for the list of ressources, '.
+'Each line contains the name of one resource.<br>'.
+'If you want to manage writen exams, you should note also class names here.<br>'.
+'If you add a activity of type resource you can extend the list.'; //admin settings
+$string['listofresources_help'] = 'Resources for this activity.'; //module settings
+
+$string['listofdepartements']="Departements";
+$string['listofdepartements_help']='Departements, compare resources';
+
+$string['listofusers']="User";
+$string['listofusers_help']='User who can book a resource, select multiple entries.';
 $string['resoptypestring'] = 'Type';
+$string['departement']='Departement';
+
+//--------------------------------
 $string['display'] = 'Create Resource Planner';
 $string['contentheader'] = 'Content';
 $string['typeall'] = 'every resource (does not work)';
 $string['typeexam'] = 'only written examina';
-$string['listofresources'] = 'list of resources';
-$string['listofresources_help'] = 'List of resources which should be available, '.
-'name and departement comma-separated, dg am112,GTA or fo115,FOS ich line is one resource.<br>'.
-'For type written exame you have to note the class names.';
 $string['abteilungen']="At least one departement, the resource belongs to";
+$string['abtheader']="Departements";
 	   

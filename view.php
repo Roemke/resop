@@ -32,7 +32,9 @@ require_once(dirname(__FILE__).'/lib.php');
 
 $id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // ... resop instance ID - it should be named as the first character of the module.
-
+$abt = optional_param('abt',0,PARAM_TEXT); 
+$class = optional_param('class',0,PARAM_TEXT);
+//ok, dann geht so was wie http://localhost/moodle/mod/resop/view.php?id=36&abt=FOS
 if ($id) {
     $cm         = get_coursemodule_from_id('resop', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
@@ -70,14 +72,22 @@ $PAGE->set_heading(format_string($course->fullname));
 
 // Output starts here.
 echo $OUTPUT->header();
-
 // Conditions to show the intro can change to look for own settings or whatever.
 if ($resop->intro) {
     echo $OUTPUT->box(format_module_intro('resop', $resop, $cm->id), 'generalbox mod_introbox', 'resopintro');
 }
 
 // Replace the following lines with you own code.
+//wahrscheinlich sollte ich hier einen renderer einsetzen, aber die Thematik ist mir im moment 
+//zu komplex 
+
 echo $OUTPUT->heading(get_string('modulename','resop'));
-echo "wird das angezeigt - ja";//also hier nur anzeige und ggf Äenderungen
+echo $OUTPUT->box_start();
+echo $OUTPUT->heading(get_string('abtheader','resop'));
+echo "abt is $abt";
+echo $OUTPUT->box_end();
+
+//zeige erstmal eine Auswahl an
+
 // Finish the page.
 echo $OUTPUT->footer();

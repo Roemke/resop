@@ -14,7 +14,9 @@
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100" SEQUENCE="false" COMMENT="The maximum grade. Can be negative to indicate the use of a scale."/>
-      </FIELDS>
+        <FIELD NAME="id_abt" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100" SEQUENCE="false" COMMENT="The maximum grade. Can be negative to indicate the use of a scale."/>
+        <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>     
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
@@ -25,7 +27,6 @@
     <TABLE NAME="resop_abt" COMMENT="Abteilungen">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="actid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
@@ -38,22 +39,29 @@
         <FIELD NAME="actid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="anzahl" TYPE="int" LENGTH="8" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="abt_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <!-- <FIELD NAME="abt_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>-->
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="key_abt_id" TYPE="foreign" FIELDS="abt_id" REFTABLE="resop_abt" REFFIELDS="id"/>
+        <!--  <KEY NAME="key_abt_id" TYPE="foreign" FIELDS="abt_id" REFTABLE="resop_abt" REFFIELDS="id"/> -->
       </KEYS>
     </TABLE>
     <TABLE NAME="resop_user" COMMENT="User">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="actid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="resop_resop_user" COMMENT="Relation resop_entry and user">
+      <FIELDS>
+        <FIELD NAME="actid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>    	
+        <FIELD NAME="uid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>    	
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="actid,uid"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="resop_resource_user" COMMENT="Relation - or an entry for the resource planner, combines resource and user, adds time, duration and creation time">

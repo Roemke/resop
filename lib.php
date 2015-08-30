@@ -80,15 +80,14 @@ function resop_supports($feature) {
 function resop_add_instance(stdClass $resop, mod_resop_mod_form $mform = null) {
     global $DB;
 
-    $resop->timecreated = time();  
-
+    $resop->timecreated = time();
+    $formContent = $mform->get_data();
     // You may have to add extra stuff in here.
 
-    $resop->id = $DB->insert_record('resop', $resop);
+    ResopDB::insertResop($resop,$formContent);
 
     resop_grade_item_update($resop);
-    $formContent = $mform->get_data();
-    ResopDB::insertResop($resop->id, $formContent);
+	//print_r($formContent);exit();
 		
     return $resop->id;
 }

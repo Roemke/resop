@@ -28,6 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->dirroot.'/mod/resop/db/ownDB.php');
 
 
 /**
@@ -43,7 +44,7 @@ class mod_resop_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-		
+		global $CFG;
         $mform = $this->_form;
 
         // Adding the "general" fieldset, where all the common settings are showed.
@@ -77,22 +78,29 @@ class mod_resop_mod_form extends moodleform_mod {
         $restype->setSelected('typeexam');        
   	    //restype fuehrt zu name restype und id id_restype
 		//-------------------------------------
-		//Abteilungen
-		$mform->addElement('textarea', 'resop_abteilungen', 
-		                    get_string("abteilungen", "resop"), 'wrap="virtual" rows="5" cols="50"');
-		$mform->setDefault('resop_abteilungen','FOS');
-        $mform->addRule('resop_abteilungen',null,'required');
-        
+		//Abteilung
+		$departements =  ResopDB::getDepartements();//
+		$resdep = $mform->addElement('select', 'resop_departement', get_string('departement', 'resop'), $departements);
+		//klappt, baut aus dem schluessel in $departements den value des select-feldes
+		$depKeys = array_keys($departements);
+		$resdep->setSelected($depKeys[0]);
+		
+		//Wer kann buchen
+		$users =  ResopDB::getUser();//
+		$usdep = $mform->addElement('select', 'resop_users', get_string('listofusers', 'resop'), $users);
+		$usdep->setMultiple(true);
+		$usdep->setSelected(array_keys($users));
+		
+		$mform->addHelpButton('resop_users', 'listofusers', 'resop'); //_help wird automatisch angehaengt
+        $mform->addRule('resop_users',null,'required');
+		
         //Ressourcen selbst
 		$mform->addElement('textarea', 'resop_resources', 
 		                    get_string("listofresources", "resop"), 'wrap="virtual" rows="15" cols="50"'); 
 		$mform->addHelpButton('resop_resources', 'listofresources', 'resop'); //_help wird automatisch angehaengt
         $mform->addRule('resop_resources',null,'required');
-		$mform->setDefault('resop_resources',"fo115,FOS\nfo215,FOS\nfo114,FOS\nfo214,FOS\nfh115,FOS");
-				                  		
-        
-        //aktualisiere die Tabelle mit den ressourcen aus der Klassenliste in den settings 
-        //ResopDB::actualizeClasses();
+		$mform->setDefault('resop_resources',$CFG->resop_resources);
+				                  		        
         // Add standard grading elements.
         //$this->standard_grading_coursemodule_elements();
 

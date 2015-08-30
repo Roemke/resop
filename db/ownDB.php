@@ -25,57 +25,93 @@
  
  class ResopDB
  {
- 		public static function actualizeClasses()
+ 		//synch users and 	
+ 		/*
+		 * data: array with usernames
+		 */
+ 		public static function synchDBUsers($data)
 		{
-			global $CFG, $DB;
-	 		$resultDB = $DB->get_records_sql('select * from {resop_resource}');
-	        
-	        $inCFG = explode("\n", $CFG->resop_resources);
-    	    foreach ($inCFG as $key => $value) {
-    	    	list($name,$type) = explode(",", $value);
-				
-        	    $sql = "insert into {resop_resource} (name, klasse) values ('$value','klasse') ";			
-        	}			
+			global $DB;
+			foreach ($data as $key => $value) {
+				if (!$DB->record_exists('resop_user',array('name' => $value)))
+				{
+					$record = new stdClass();
+					$record->name = $value;
+					$DB->insert_record('resop_user', $record, false);//true returns id
+				}	
+			}
 		}
- 	    //resop eingefuegt, also eigene DB-Eintraege
-		public static function insertResop($id, $formContent)
+ 		/*
+		 * data: array with departements
+		 */
+ 		public static function synchDBDepartements($data)
+		{
+			global $DB;
+			foreach ($data as $key => $value) {
+				if (!$DB->record_exists('resop_abt',array('name' => $value)))
+				{
+					$record = new stdClass();
+					$record->name = $value;
+					$DB->insert_record('resop_abt', $record, false);//true returns id
+				}	
+			}
+		}
+		
+		//liefert array mit index aus der DB und name aus der DB
+		public static function getDepartements()
+		{
+			global $DB;
+			return $DB->get_records_menu('resop_abt');
+		}
+		//liefert array mit index aus der DB und name aus der DB
+		public static function getUser()
+		{
+			global $DB;
+			return $DB->get_records_menu('resop_user');
+		}
+		
+		public static function insertResop(stdClass &$resop, $formContent)
 		{
 			global $DB;	
-			$abt = explode("\n",$formContent->resop_abteilungen);
-			$type = $formContent->resop_type;
+			$abt = $formContent->resop_departement;
+			$resop->abt_id = $abt ;
+			$resop->type =  $formContent->resop_type;  	
+    		$resop->id = $DB->insert_record('resop', $resop);
+		
 			$resources = explode("\n",$formContent->resop_resources); 
-			$abtIds = array();
-			foreach ($abt as $key => $value) {
-				$record = new stdClass();
-				$record->name         = trim($value);
-				$record->actid = $id;
-				$lastinsertid = $DB->insert_record('resop_abt', $record, true);//true returns id
-				$abtIds[$value]=$lastinsertid;			
-			} 
+			array_walk($resources, create_function('&$val', '$val = trim($val);'));
+			$resources = array_filter($resources); //leere weg
 			
+			$users = $formContent->resop_users;
+			$records  = array();
+			foreach ($users as $key => $value) {
+				$record = new stdClass();
+				$record->actid = $resop->id;
+				$record->uid = $value;
+				$records[]=$record;
+			}
+			$DB->insert_records('resop_resop_user',$records);
+			//schnellste Methode und behebt problem, das resop_resop_users keine id hat. 
+			//ressourcen eintragen
+			
+			$records = array();
 			foreach ($resources as $key => $value)
 			{
 				$record = new stdClass();
-				list ($name,$abt) = explode(",",$value);
-				$name = trim($name);
-				$abt = trim($abt); //strange trim noetig
+				$name = trim($value); //strange trim noetig
 				$record->name = $name;
-				$record->abt_id = $abtIds[$abt];
-				$record->type = $type;
-				$record->actid = $id;
+				$record->actid = $resop->id;
 				$record->anzahl = 1; //erstmal  auf Verdacht eingebaut
-				$DB->insert_record('resop_resource',$record,false);
-			}
-			//var_dump($abtIds);exit();
+				$records[]=$record;
+			}										
+			$DB->insert_records('resop_resource',$records);
 		}
 		
 		public static function deleteResop($actid)
 		{
 			global $DB;
-			$DB->delete_records('resop_resource_user', array('actid' => $actid));	
-			$DB->delete_records('resop_user', array('actid' => $actid));	
-			$DB->delete_records('resop_', array('actid' => $actid));	
-			$DB->delete_records('resop_resource', array('actid' => $actid));	
-			$DB->delete_records('resop_abt', array('actid' => $actid));	
+			$DB->delete_records('resop_resource_user', array('actid' => $actid));	//alle von Trainern eingetragenen ressourcen
+			$DB->delete_records('resop_resop_user', array('actid' => $actid));	 //bei der erstellung eingetragen
+			$DB->delete_records('resop_resource', array('actid' => $actid));	//ebenso
 		}	
  }		
