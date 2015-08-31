@@ -22,9 +22,12 @@
  * if you like, and it can span multiple lines.
  *
  * @package    mod_resop
- * @copyright  2015 Your Name
+ * @copyright  2015 Karsten Römke
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+ 
+ * 
+ * 
+ * */
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,14 +41,14 @@ $string['resop'] = 'resop';
 $string['pluginadministration'] = 'resop administration';
 $string['pluginname'] = 'resop';
 
-
 // for the settings
 $string['listofresources'] = 'List of resources';//both
 $string['listofresources_default_help'] = 'Default for the list of ressources, '.
 'Each line contains the name of one resource.<br>'.
 'If you want to manage writen exams, you should note also class names here.<br>'.
 'If you add a activity of type resource you can extend the list.'; //admin settings
-$string['listofresources_help'] = 'Resources for this activity.'; //module settings
+$string['listofresources_help'] = 'Resources for this activity.<br>'.
+                                 'You can add and remove ressources.'; //module settings
 
 $string['listofdepartements']="Departements";
 $string['listofdepartements_help']='Departements, compare resources';
@@ -60,6 +63,10 @@ $string['display'] = 'Create Resource Planner';
 $string['contentheader'] = 'Content';
 $string['typeall'] = 'every resource (does not work)';
 $string['typeexam'] = 'only written examina';
-$string['abteilungen']="At least one departement, the resource belongs to";
+$string['abteilungen']="Choose departement.";
 $string['abtheader']="Departements";
+//--------------- links in view.php --------------
+$string['showall']='Show all reservations';
+$string['resExam']='Classes';
+$string['resFree']='Resources';
 	   

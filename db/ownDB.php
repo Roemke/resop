@@ -63,29 +63,6 @@
 			global $DB;
 			return $DB->get_records_menu('resop_abt');
 		}
-		
- 		/*
-		 * data: array with departements
-		 */
- 		public static function synchDBDepartements($data)
-		{
-			global $DB;
-			foreach ($data as $key => $value) {
-				if (!$DB->record_exists('resop_abt',array('name' => $value)))
-				{
-					$record = new stdClass();
-					$record->name = $value;
-					$DB->insert_record('resop_abt', $record, false);//true returns id
-				}	
-			}
-		}
-		
-		//liefert array mit index aus der DB und name aus der DB
-		public static function getDepartements()
-		{
-			global $DB;
-			return $DB->get_records_menu('resop_abt');
-		}
 		//liefert array mit index aus der DB und name aus der DB
 		public static function getUser()
 		{

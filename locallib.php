@@ -21,12 +21,12 @@
  * logic, should go here. Never include this file from your lib.php!
  *
  * @package    mod_resop
- * @copyright  2015 Your Name
+ * @copyright  2015 Karsten Römke
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
-
+require_once("$CFG->dirroot/mod/resop/lib.php"); //documentation says it 
 /*
  * Does something really useful with the passed things
  *

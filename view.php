@@ -29,12 +29,23 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
+require_once($CFG->dirroot . '/mod/resop/locallib.php');
 
-$id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // ... resop instance ID - it should be named as the first character of the module.
-$abt = optional_param('abt',0,PARAM_TEXT); 
-$class = optional_param('class',0,PARAM_TEXT);
+//$id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
+//$n  = optional_param('n', 0, PARAM_INT);  // ... resop instance ID - it should be named as the first character of the module.
+
+$id = required_param('id', PARAM_INT);
+
+$urlparams = array('id' => $id,
+                  'action' => optional_param('action', '', PARAM_TEXT),
+                  'abt' => optional_param('abt', 0, PARAM_INT),
+                  'res' => optional_param('res', 0, PARAM_INT), //ressource we want to see eg name of class
+                  'user' => optional_param('user',0,PARAM_INT)
+				  );
+
+				   
 //ok, dann geht so was wie http://localhost/moodle/mod/resop/view.php?id=36&abt=FOS
+/* should be not neccessary is from template
 if ($id) {
     $cm         = get_coursemodule_from_id('resop', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
@@ -46,9 +57,21 @@ if ($id) {
 } else {
     error('You must specify a course_module ID or an instance ID');
 }
+ */
+$url = new moodle_url('/mod/resop/view.php', $urlparams);
+ 
+ 
+$cm         = get_coursemodule_from_id('resop', $id, 0, false, MUST_EXIST);
+$course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
+$resop  = $DB->get_record('resop', array('id' => $cm->instance), '*', MUST_EXIST);
+ 
 require_login($course, true, $cm);
 
+/*don't understand event - why should i trigger an event
+ * nobody could have registered so far 
+ * maybe trigger leads to some logging - could be, there are controverse discussions
+ * about Event2 */
 $event = \mod_resop\event\course_module_viewed::create(array(
     'objectid' => $PAGE->cm->instance,
     'context' => $PAGE->context,
@@ -56,10 +79,13 @@ $event = \mod_resop\event\course_module_viewed::create(array(
 $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $resop);
 $event->trigger();
-
+//----------------------------------------------------
 // Print the page header.
+$PAGE->set_url($url);
+/*assign module does set_url here and the rest in own class ?
+ * we try it first without own class and traditional output
+ * */
 
-$PAGE->set_url('/mod/resop/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($resop->name));
 $PAGE->set_heading(format_string($course->fullname));
 
@@ -81,13 +107,24 @@ if ($resop->intro) {
 //wahrscheinlich sollte ich hier einen renderer einsetzen, aber die Thematik ist mir im moment 
 //zu komplex 
 
-echo $OUTPUT->heading(get_string('modulename','resop'));
+//echo $OUTPUT->heading(get_string('modulename','resop'));
 echo $OUTPUT->box_start();
-echo $OUTPUT->heading(get_string('abtheader','resop'));
-echo "abt is $abt";
+//show some links if no action is set
+//var_dump($urlparams);
+if (empty($urlparams['action']))
+{
+	echo $OUTPUT->heading(get_string('abtheader','resop'),4);
+	echo $OUTPUT->action_link(new moodle_url('view.php', array('id' => $id, 'action' => 'showall')),
+	 		get_string('showall','resop')); // Required
+	$text = ($resop->type == 'typeexam') ? get_string('resExam','resop') : get_string('resFree','resop');	 		
+	echo $OUTPUT->heading($text,4);
+	//linkliste
+	$resources = $DB->get_records_sql('SELECT name FROM {resop_resource_user} ru LEFT JOIN {resop_resource} rr '
+		. " ON ru.resid=rr.id  WHERE ru.actid={$resop->id} ORDER BY name");
+	
+	var_dump($resources); //ok geht
+}
 echo $OUTPUT->box_end();
-
-//zeige erstmal eine Auswahl an
 
 // Finish the page.
 echo $OUTPUT->footer();

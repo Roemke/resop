@@ -47,7 +47,8 @@ $string['listofresources_default_help'] = 'Vorgabe für die Liste der ressourcen
 'Jede Zeile enthält einer Ressource.<br>'.
 'Will man Klassenarbeiten verwalten, bietet es sich an, hier die Klassen aufzuführen.<br>'.
 'Fügt man eine Resop-Aktivität hinzu kann man die Liste erweitern'; //admin setting
-$string['listofresources_help'] = 'Resourcen, die in dieser Aktivität verwendet werden können.'; //module settings
+$string['listofresources_help'] = 'Resourcen, die in dieser Aktivität verwendet werden können.<br>'.
+								  'Sie können Elemente löschen und / oder hinzufügen. '; //module settings
 
 $string['listofusers']="Nutzer";
 $string['listofusers_help']='Nutzer, die eine Ressource buchen können, Multiselect sinnvoll.';
@@ -56,11 +57,17 @@ $string['listofdepartements']="Abteilungen";
 $string['listofdepartements_help']='Abteilungen, vergleiche Resourcen';
 $string['resoptypestring'] = 'Art';
 $string['departement']='Abteilung';
+
 //---------------------------------------
 $string['display'] = 'Ressourcen Planer erstellen';
 $string['contentheader'] = 'Inhalt';
 $string['typeall'] = 'Beliebige Ressource wählbar (funktioniert noch nicht)';
 $string['typeexam'] = 'Klassenarbeiten';
-
+$string['abteilungen']="Abteilung wählen.";
+$string['abtheader']="Abteilungen";
+//--------------- links in view.php --------------
+$string['showall']='Show all reservations';
+$string['resExam']='Klassen';
+$string['resFree']='Ressourcen';
 
 
