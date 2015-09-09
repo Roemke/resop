@@ -65,8 +65,21 @@ $string['typeall'] = 'every resource (does not work)';
 $string['typeexam'] = 'only written examina';
 $string['abteilungen']="Choose departement.";
 $string['abtheader']="Departements";
-//--------------- links in view.php --------------
+//--------------- view.php --------------
 $string['showall']='Show all reservations';
 $string['resExam']='Classes';
 $string['resFree']='Resources';
-	   
+$string['insert'] = 'Insert an entry';
+$string['entries'] = 'Entries';
+//--------------------------- Insert / Update Form
+$string['insertClass']='Class:';
+$string['insertUser']='booked for:';
+$string['kind']='Course / kind of examina:';
+$string['kind_help']='Insert name of the subject, eg MA (mathematics) and the kind eg test or ...  .';
+$string['termin']="Start-Date/Time:";
+$string['duration']="Duration:";
+$string['saveback']="Save and back to list";
+$string['savenext']="Save, enter next";
+$string['dateError'] = 'Date in the past!';
+$string['error3KA'] = 'Maximum number of exams exceeded';	   
+$string['errorOverlap'] = 'Overlapping appointment';

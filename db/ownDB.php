@@ -80,8 +80,7 @@
 		
 			$resources = explode("\n",$formContent->resop_resources); 
 			array_walk($resources, create_function('&$val', '$val = trim($val);'));
-			$resources = array_filter($resources); //leere weg
-			
+			$resources = array_filter($resources); //leere weg			
 			$users = $formContent->resop_users;
 			$records  = array();
 			foreach ($users as $key => $value) {
@@ -105,6 +104,61 @@
 				$records[]=$record;
 			}										
 			$DB->insert_records('resop_resource',$records);
+		}
+
+		/*
+		 * @param int $id id of resop modul
+		 * @param object $fromform Formdata submitted by user
+		 * @throws exception with error text
+		 * checks if there is a collision of dates, and if not insert
+		 * the new entry 
+		 * */
+		public static function tryInsertExamResource($id,$fromform) 
+		{
+			global $DB;
+			$error = null;
+			//get entries in this week starting with monday
+			$start = $fromform->starttime;
+			$duration = $fromform->duration;
+			$lastMonday = strtotime("last Monday",$start);
+			$nextSunday = strtotime("Sunday",$lastMonday);
+			$result = $DB->get_records_sql("SELECT * FROM {resop_resource_user} WHERE termin BETWEEN ? AND ? ".
+				"AND resid=?", array($lastMonday,$nextSunday,(int) $fromform->res));
+			if (count($result) >= 3) //todo sollte man in den Einstellungen konfigurieren
+			{
+				throw new Exception(get_string("error3KA","resop"));
+			}
+			else 
+			{
+				foreach ($result as $key => $value) {
+					if ( ($start >= $value->termin && $start <= $value->termin + $value->time )
+					  || ($value->termin >= $start && $value->termin <= $start + $duration) )
+						throw new Exception(get_string("errorOverlap","resop"));
+				}		
+			} 
+			ResopDB::insertExamResource($id, $fromform);
+		} 			
+		
+		
+		/*
+		 * @param int $id id of resop modul
+		 * @param object $fromform Formdata submitted by user
+		 * insert the new entry
+		 */
+		public static function insertExamResource($id,$fromform)
+		{
+			global $DB, $USER;
+			$record = new stdClass();
+			$record->uid =   (int) $fromform->user;     //user
+			$record->resid = (int) $fromform->res;     //resource
+			$record->actid = $id;	  //this resop module
+			$record->creation = time(); //creation time
+			$record->termin = (int) $fromform->starttime;
+			$record->time = (int) $fromform->duration;
+			$record->moun =  $USER->firstname . ' ' . $USER->lastname;//moodle user name who creates the entry  
+			$record->note = $fromform->kind; //kind is stored under note
+			$DB->insert_record('resop_resource_user', $record);//true returns id
+			//insert record geht nicht, wenn keine id 						
 		}
 		
 		public static function deleteResop($actid)

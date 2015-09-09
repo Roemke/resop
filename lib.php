@@ -306,17 +306,19 @@ function resop_grade_item_update(stdClass $resop, $reset=false) {
     $item['itemname'] = clean_param($resop->name, PARAM_NOTAGS);
     $item['gradetype'] = GRADE_TYPE_VALUE;
 
-    if ($resop->grade > 0) {
-        $item['gradetype'] = GRADE_TYPE_VALUE;
-        $item['grademax']  = $resop->grade;
-        $item['grademin']  = 0;
-    } else if ($resop->grade < 0) {
-        $item['gradetype'] = GRADE_TYPE_SCALE;
-        $item['scaleid']   = -$resop->grade;
-    } else {
-        $item['gradetype'] = GRADE_TYPE_NONE;
+	if (isset($resop->grade))
+	{
+	    if ($resop->grade > 0) {
+	        $item['gradetype'] = GRADE_TYPE_VALUE;
+	        $item['grademax']  = $resop->grade;
+	        $item['grademin']  = 0;
+	    } else if ($resop->grade < 0) {
+	        $item['gradetype'] = GRADE_TYPE_SCALE;
+	        $item['scaleid']   = -$resop->grade;
+	    } else {
+	        $item['gradetype'] = GRADE_TYPE_NONE;
+	    }
     }
-
     if ($reset) {
         $item['reset'] = true;
     }

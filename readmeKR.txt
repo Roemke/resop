@@ -68,3 +68,7 @@ Conflicts:
         db/ownDB.php
         lib.php
 ok, glaube ich habe das wieder hergestellt
+
+insert gebastelt, kontrolle ob terminueberschneidung
+in relations tabelle noch eine id einfuegen, sonst gibt
+es zuviel Aerger - beim insert und bei der Abfrage
