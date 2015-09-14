@@ -65,21 +65,30 @@ $string['typeall'] = 'Beliebige Ressource wählbar (funktioniert noch nicht)';
 $string['typeexam'] = 'Klassenarbeiten';
 $string['abteilungen']="Abteilung wählen.";
 $string['abtheader']="Abteilung";
-//--------------- links in view.php --------------
+//--------------- links in view.php / view.php  --------------
 $string['showall']='Zeige alle Einträge';
 $string['resExam']='Klassen';
 $string['resFree']='Ressourcen';
 $string['insert'] = 'Eintrag hinzufügen';
 $string['entries'] = 'Einträge';
+$string['nodata']='keine Einträge gefunden';
+$string['class']='Klasse';
+$string['bookedby'] = 'gebucht für ';
+$string['termin'] = 'Termin';
+$string['edit'] = 'bearbeiten';
 //--------------------------- Insert / Update Form
-$string['insertClass']='Klasse:';
-$string['insertUser']='gebucht für:';
-$string['kind']='Fach / Art:';
+$string['insertClass']='Klasse';
+$string['choose']='Bitte wählen!';
+$string['chooseHelp']='Sie müssen eine Auswahl treffen!';
+$string['insertUser']='gebucht für';
+$string['kind']='Fach / Art / Raum';
 $string['kind_help']='Bitte angeben, um welches Fach und welche Art z.B. KA oder Test oder Abgabe es sich handelt.';
-$string['termin']="Start-Datum/Zeit:";
-$string['duration']="Dauer:";
+$string['termin']="Start-Datum/Zeit";
+$string['duration']="Dauer";
 $string['saveback']="Speichern, zur Liste";
 $string['savenext']="Speichern und nächster";
 $string['dateError'] = 'Datum in der Vergangenheit!';
 $string['error3KA'] = 'Maximalzahl der Klassenarbeiten überschritten';	   
 $string['errorOverlap'] = 'Terminüberschneidung';
+$string['confirmdelete'] = 'Den Eintrag löschen?';
+

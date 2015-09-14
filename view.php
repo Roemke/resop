@@ -21,7 +21,7 @@
  * if you like, and it can span multiple lines.
  *
  * @package    mod_resop
- * @copyright  2015 Your Name
+ * @copyright  2015 Karsten Römke
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -81,7 +81,7 @@ function showListOfLinks($id,$resop)
 {
 	global $OUTPUT, $DB;
 	echo $OUTPUT->heading(get_string('entries','resop'),4);
-	echo $OUTPUT->action_link(new moodle_url('view.php', array('id' => $id, 'action' => 'showall')),
+	echo $OUTPUT->action_link(new moodle_url('view.php', array('id' => $id, 'action' => 'showAll')),
 	 		get_string('showall','resop')); // Required
 	$text = ($resop->type == 'typeexam') ? get_string('resExam','resop') : get_string('resFree','resop');	 		
 	echo $OUTPUT->heading($text,4);
@@ -95,24 +95,84 @@ function showListOfLinks($id,$resop)
 		echo "&nbsp;&nbsp;&nbsp;";			
 	}
 }
-function showClasses($select = '%')
+function showClasses($id,$select = '%')
 {
-	global $DB;
+	global $DB,$OUTPUT,$urlparams;
 	$operator=' LIKE ';
 	if ($select!='%')
 		$operator = '='; 
-	$sql= 'SELECT rru.id, rru.termin, rru.time, rru.creation, rru.moun, rru.note, rr.name, ru.name '.
+	$sql= 'SELECT rru.id, rru.termin, rru.time, rru.creation, rru.moun, rru.note, rr.name as rname, ru.name  as uname '.
 		  'FROM {resop_resource_user} rru ' .
 	      'JOIN {resop_resource} rr ON rru.resid=rr.id  '. 
 	      'JOIN {resop_user} ru ON rru.uid=ru.id ' . 
-	      'WHERE rr.name' .$operator . "'$select'";
+	      'WHERE rr.name' .$operator . "'$select' ORDER BY rr.name, rru.termin";
     $classes = $DB->get_records_sql($sql);
-	print_r($classes);
+    //print_r($classes);
+    $iconDel  =  '<img class="smallicon" alt="' . get_string('delete') . '" src="' . $OUTPUT->pix_url('t/delete') . '" >'; 
+    $iconEdit =  '<img class="smallicon" alt="' . get_string('edit')   . '" src="' . $OUTPUT->pix_url('t/edit')   . '" >'; 
+	 
+	if (count($classes)>0)
+	{
+		$table = new html_table();
+		$table->head = array(get_string('class','resop') ,
+							 get_string('termin','resop') ,
+							 get_string('duration','resop'),
+							 get_string('kind','resop'),
+							 get_string('bookedby','resop'),
+							 get_string('edit','resop'));
+							 
+    	$table->data = array();
+		foreach ($classes as $key => $value) 
+		{
+			$linkDel =  $OUTPUT->action_link(new moodle_url('delete.php', 
+						array('id' => $id, 'action' => 'delete','delId'=>$value->id,
+						'fromAction' => $urlparams['action'], 'class'=> $urlparams['class'] )),$iconDel);
+						//delete get's the old action and class to go back to this page	
+			$table->data[] = array($value->rname,
+								   strftime('%a, %d.%m.%g %R',$value->termin),
+								   $value->time/60 . " Min.",
+								   $value->note,
+								   $value->uname,
+								   $linkDel ." ".  $iconEdit) ;				
+		}
+		echo html_writer::table($table);		 
+	}
+	else 
+	{
+		$OUTPUT->box(get_string('nodata','resop'));
+	}
 }
 function showInsertLink($id)
 {
 	echo '<div style="display: inline-block; float: right"><a href="view.php?id='.$id . '&action=insert">' 
     	. get_string('insert','resop') .  '</a></div>';	
+}
+//delete an entry
+function deleteEntry(&$urlparams)
+{
+	global $DB;
+	$delId = $urlparams['delId'];
+	if (isset($delId))
+	{
+		$DB->delete_records('resop_resource_user', array( "id" => $delId));
+		$from = explode('|', $urlparams['fromAction']);
+		if ($from[0] == 'showAll')
+		{
+			$urlparams['action'] = 'showAll'; //from action will later be set to action ... very q&d
+			showClasses($urlparams['id']);
+		}
+		else if ($from[0] == 'showClass')
+		{
+			$urlparams['action'] = 'showClass';
+			$urlparams['class'] = $from[1];
+			showClasses($urlparams['id'],$from[1]);
+		}
+				
+	}
+	else 
+	{
+		echo "strange - you like to delete an entry without giving the id";	
+	}
 }
 
 //-----------------------------------------------------
@@ -123,8 +183,11 @@ function showInsertLink($id)
 $id = required_param('id', PARAM_INT);
 
 $urlparams = array('id' => $id,
-                  'action' => optional_param('action', '', PARAM_TEXT),
-				  );
+                  'action' => optional_param('action', '', PARAM_TEXT), 
+                  'class' => optional_param('class','',PARAM_TEXT),
+                  'delId' => optional_param('delId','',PARAM_INT),
+                  'fromAction' => optional_param('fromAction','',PARAM_TEXT), //woher kam der Aufruf
+				  );//second argument of optional_param is the value if the demanded value is not set
 
 				   
 //ok, dann geht so was wie http://localhost/moodle/mod/resop/view.php?id=36&abt=FOS
@@ -208,21 +271,27 @@ if (empty($urlparams['action']))
 {
 	showListOfLinks($id,$resop);						
 }
-else if ($urlparams['action']=='showall') //if a class is clicked
+
+
+if ($urlparams['action']=='showAll') //if a class is clicked
 {
-	showClasses('%');
+	showClasses($id,'%');
+}
+else if ($urlparams['action']=='showClass')
+{
+	showClasses($id,$urlparams['class']);	
 }
 else if (has_capability('mod/resop:book', $context))
 {
 	if ($urlparams['action'] == 'insert')
 	{
 		showFormForInsert($url,$id,$resop);
+	}
+	else if($urlparams['action'] == 'delete')
+	{
+		deleteEntry($urlparams);
 	}	
 }
-else // kann nur passieren, wenn ein User die Url direkt eingibt aber nicht die noetigen rechte hat
-{
-	echo "You are not allowed to see this entry.";
-} 
 echo $OUTPUT->box_end();
 
 // Finish the page.
