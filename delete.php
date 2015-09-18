@@ -45,6 +45,42 @@ function deleteEntry(&$urlparams)
 	}
 }
 
+function outputIntro($url,$course,$cm,$resop)
+{
+	global $PAGE, $OUTPUT;
+	// Print the page header.
+	$PAGE->set_url($url);
+	/*assign module does set_url here and the rest in own class ?
+	 * we try it first without own class and traditional output
+	 * */
+	
+	$PAGE->set_title(format_string($resop->name));
+	$PAGE->set_heading(format_string($course->fullname));
+	
+	/*
+	 * Other things you may want to set - remove if not needed.
+	 * $PAGE->set_cacheable(false);
+	 * $PAGE->set_focuscontrol('some-html-id');
+	 * $PAGE->add_body_class('resop-'.$somevar);
+	 */
+	
+	// Output starts here.
+	echo $OUTPUT->header();
+	// Conditions to show the intro can change to look for own settings or whatever.
+	if ($resop->intro) {
+	    echo $OUTPUT->box(format_module_intro('resop', $resop, $cm->id), 'generalbox mod_introbox', 'resopintro');
+	}
+	
+	// Replace the following lines with you own code.
+	//wahrscheinlich sollte ich hier einen renderer einsetzen, aber die Thematik ist mir im moment 
+	//zu komplex 
+	
+	//echo $OUTPUT->heading(get_string('modulename','resop'));
+	echo $OUTPUT->box_start();
+	//show some links if no action is set
+	//var_dump($urlparams);
+		
+}
 //-----------------------------------------------------
 
 //$id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
@@ -86,37 +122,6 @@ $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $resop);
 $event->trigger();
 //----------------------------------------------------
-// Print the page header.
-$PAGE->set_url($url);
-/*assign module does set_url here and the rest in own class ?
- * we try it first without own class and traditional output
- * */
-
-$PAGE->set_title(format_string($resop->name));
-$PAGE->set_heading(format_string($course->fullname));
-
-/*
- * Other things you may want to set - remove if not needed.
- * $PAGE->set_cacheable(false);
- * $PAGE->set_focuscontrol('some-html-id');
- * $PAGE->add_body_class('resop-'.$somevar);
- */
-
-// Output starts here.
-echo $OUTPUT->header();
-// Conditions to show the intro can change to look for own settings or whatever.
-if ($resop->intro) {
-    echo $OUTPUT->box(format_module_intro('resop', $resop, $cm->id), 'generalbox mod_introbox', 'resopintro');
-}
-
-// Replace the following lines with you own code.
-//wahrscheinlich sollte ich hier einen renderer einsetzen, aber die Thematik ist mir im moment 
-//zu komplex 
-
-//echo $OUTPUT->heading(get_string('modulename','resop'));
-echo $OUTPUT->box_start();
-//show some links if no action is set
-//var_dump($urlparams);
 
 $context = context_module::instance($cm->id);
 //glossary uses a session key - should I add one too?
@@ -125,13 +130,14 @@ if (has_capability('mod/resop:book', $context))
 	$urlparams['action']  = $urlparams['fromAction'];
 	if ($confirm==1)
 	{
-		//deleteEntry($urlparams);
+		deleteEntry($urlparams);
 		unset($urlparams['delId']);
 		unset($urlparams['fromAction']);
 		$url = new moodle_url('view.php',$urlparams);
 		redirect($url);//todo
 	}	
 	else {
+		outputIntro($url,$course,$cm,$resop);
 		//todo url bauen
 		$linkyes = 'delete.php';
 		$optionsyes = $urlparams; //should be a copy
@@ -140,9 +146,9 @@ if (has_capability('mod/resop:book', $context))
 		echo $OUTPUT->confirm(get_string('confirmdelete', 'resop'),
 		        new moodle_url($linkyes,$optionsyes),
 		        new moodle_url($linkno,$urlparams));	
+		echo $OUTPUT->box_end();
 	}
 }
-echo $OUTPUT->box_end();
 
 // Finish the page.
 echo $OUTPUT->footer();

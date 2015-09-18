@@ -34,13 +34,16 @@ require_once($CFG->dirroot . '/mod/resop/InsertForm.php');
 require_once($CFG->dirroot.'/mod/resop/db/ownDB.php');
 
 //some functions used only here
-function showFormForInsert( $url,$id,$resop)
+//maybe we should seperate this from the actual file 
+function showInsEditForm( $url,$id,$resop,$editId = null)
 {
-	//var_dump($resop);
 	global $OUTPUT;
 	if ($resop->type == 'typeexam')
 	{
-		$form = new InsertForm($url,array('resop' => $resop));	
+		if ($editId) 
+			$form = new EditForm($url,array('resop'=>$resop,'editId'=>$editId));
+		else
+			$form = new InsertForm($url,array('resop' => $resop));	
 		if ($form->is_cancelled())
 		{
 			showInsertLink($id); 
@@ -49,9 +52,6 @@ function showFormForInsert( $url,$id,$resop)
 		else if ($fromform = $form->get_data()) 
 		{
   			//In this case you process validated data. $mform->get_data() returns data posted in form.
-			echo "<textarea>";
-			var_dump($fromform);
-			echo "</textarea>";
 			ResopDB::tryInsertExamResource($resop->id,$fromform) ; 			
 			if (isset($fromform->submitbutton2))
 			{
@@ -77,6 +77,7 @@ function showFormForInsert( $url,$id,$resop)
 		echo "sorry, not supported";
 	}
 }
+
 function showListOfLinks($id,$resop)
 {
 	global $OUTPUT, $DB;
@@ -126,14 +127,17 @@ function showClasses($id,$select = '%')
 		{
 			$linkDel =  $OUTPUT->action_link(new moodle_url('delete.php', 
 						array('id' => $id, 'action' => 'delete','delId'=>$value->id,
-						'fromAction' => $urlparams['action'], 'class'=> $urlparams['class'] )),$iconDel);
+						'fromAction' => $urlparams['action'], 'class'=> $urlparams['class'] )),$iconDel);					
 						//delete get's the old action and class to go back to this page	
+			$linkEdit = $OUTPUT->action_link(new moodle_url('view.php',
+						array('id'=>$id,'action'=>'edit','editId'=>$value->id,
+						'fromAction' => $urlparams['action'], 'class'=> $urlparams['class'])),$iconEdit);
 			$table->data[] = array($value->rname,
 								   strftime('%a, %d.%m.%g %R',$value->termin),
 								   $value->time/60 . " Min.",
 								   $value->note,
 								   $value->uname,
-								   $linkDel ." ".  $iconEdit) ;				
+								   $linkDel ." ".  $linkEdit) ;				
 		}
 		echo html_writer::table($table);		 
 	}
@@ -144,7 +148,7 @@ function showClasses($id,$select = '%')
 }
 function showInsertLink($id)
 {
-	echo '<div style="display: inline-block; float: right"><a href="view.php?id='.$id . '&action=insert">' 
+	echo '<div style=" display: inline-block; position: relative; top: -30px; float: right; margin-bottom:5px;"><a href="view.php?id='.$id . '&action=insert">' 
     	. get_string('insert','resop') .  '</a></div>';	
 }
 //delete an entry
@@ -186,6 +190,7 @@ $urlparams = array('id' => $id,
                   'action' => optional_param('action', '', PARAM_TEXT), 
                   'class' => optional_param('class','',PARAM_TEXT),
                   'delId' => optional_param('delId','',PARAM_INT),
+                  'editId' => optional_param('editId','',PARAM_INT),
                   'fromAction' => optional_param('fromAction','',PARAM_TEXT), //woher kam der Aufruf
 				  );//second argument of optional_param is the value if the demanded value is not set
 
@@ -259,7 +264,6 @@ if ($resop->intro) {
 //echo $OUTPUT->heading(get_string('modulename','resop'));
 echo $OUTPUT->box_start();
 //show some links if no action is set
-//var_dump($urlparams);
 $context = context_module::instance($cm->id);
 
 if (has_capability('mod/resop:book', $context) 
@@ -285,7 +289,12 @@ else if (has_capability('mod/resop:book', $context))
 {
 	if ($urlparams['action'] == 'insert')
 	{
-		showFormForInsert($url,$id,$resop);
+		showInsEditForm($url,$id,$resop);
+	}
+	else if ($urlparams['action']== 'edit')
+	{
+		$editId = $urlparams['editId'];
+		showInsEditForm($url,$id,$resop,$editId);
 	}
 	else if($urlparams['action'] == 'delete')
 	{

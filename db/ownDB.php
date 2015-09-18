@@ -124,18 +124,20 @@
 			$nextSunday = strtotime("Sunday",$lastMonday);
 			$result = $DB->get_records_sql("SELECT * FROM {resop_resource_user} WHERE termin BETWEEN ? AND ? ".
 				"AND resid=?", array($lastMonday,$nextSunday,(int) $fromform->res));
+			/* todo: check exceptions
 			if (count($result) >= 3) //todo sollte man in den Einstellungen konfigurieren
 			{
 				throw new Exception(get_string("error3KA","resop"));
 			}
 			else 
-			{
-				foreach ($result as $key => $value) {
+			{ 
+			    foreach ($result as $key => $value) 
+				{
 					if ( ($start >= $value->termin && $start <= $value->termin + $value->time )
 					  || ($value->termin >= $start && $value->termin <= $start + $duration) )
 						throw new Exception(get_string("errorOverlap","resop"));
 				}		
-			} 
+			} */
 			ResopDB::insertExamResource($id, $fromform);
 		} 			
 		
