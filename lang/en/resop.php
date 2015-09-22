@@ -87,6 +87,7 @@ $string['termin']="Start-Date/Time:";
 $string['duration']="Duration:";
 $string['saveback']="Save and back to list";
 $string['savenext']="Save, enter next";
+$string['update']='Update';
 $string['dateError'] = 'Date in the past!';
 $string['error3KA'] = 'Maximum number of exams exceeded';	   
 $string['errorOverlap'] = 'Overlapping appointment';

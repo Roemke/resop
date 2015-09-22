@@ -128,7 +128,8 @@ class EditForm extends ResopInsEditMoodleForm
 		$editId = $this->_customdata['editId'];
 		$this->setValues($editId, $resop);
 		
-		$buttonarray[] = &$mform->createElement('submit', 'submitbutton2', get_string('saveback','resop'));
+		$buttonarray[] = &$mform->createElement('submit', 'submitbutton2', get_string('update','resop'));
+		//submitbutton2 leads after updating back to the list
 		$buttonarray[] = &$mform->createElement('cancel');
 		$mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
 		$mform->closeHeaderBefore('buttonar');		

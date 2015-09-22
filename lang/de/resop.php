@@ -87,6 +87,7 @@ $string['termin']="Start-Datum/Zeit";
 $string['duration']="Dauer";
 $string['saveback']="Speichern, zur Liste";
 $string['savenext']="Speichern und nächster";
+$string['update']='Aktualisieren';
 $string['dateError'] = 'Datum in der Vergangenheit!';
 $string['error3KA'] = 'Maximalzahl der Klassenarbeiten überschritten';	   
 $string['errorOverlap'] = 'Terminüberschneidung';

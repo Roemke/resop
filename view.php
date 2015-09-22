@@ -52,7 +52,10 @@ function showInsEditForm( $url,$id,$resop,$editId = null)
 		else if ($fromform = $form->get_data()) 
 		{
   			//In this case you process validated data. $mform->get_data() returns data posted in form.
-			ResopDB::tryInsertExamResource($resop->id,$fromform) ; 			
+			if ($editId)			
+				ResopDB::tryUpdateExamResource($resop->id, $editId, $fromform);
+			else
+				ResopDB::tryInsertExamResource($resop->id,$fromform) ; 			
 			if (isset($fromform->submitbutton2))
 			{
 				showInsertLink($id);
@@ -81,13 +84,18 @@ function showInsEditForm( $url,$id,$resop,$editId = null)
 function showListOfLinks($id,$resop)
 {
 	global $OUTPUT, $DB;
+	//need it to check capability
+	$cm = get_coursemodule_from_id('resop', $id, 0, false, MUST_EXIST);
+	$context = context_module::instance($cm->id);
+	
+	
 	echo $OUTPUT->heading(get_string('entries','resop'),4);
 	echo $OUTPUT->action_link(new moodle_url('view.php', array('id' => $id, 'action' => 'showAll')),
 	 		get_string('showall','resop')); // Required
+	//linkliste Klassen/Resources
 	$text = ($resop->type == 'typeexam') ? get_string('resExam','resop') : get_string('resFree','resop');	 		
 	echo $OUTPUT->heading($text,4);
-	//linkliste
-	$resources = $DB->get_records_sql('SELECT DISTINCT name FROM {resop_resource_user} ru LEFT JOIN {resop_resource} rr '
+	$resources = $DB->get_records_sql('SELECT DISTINCT name FROM {resop_resource_user} ru JOIN {resop_resource} rr '
 		. " ON ru.resid=rr.id  WHERE ru.actid={$resop->id} ORDER BY name");//insance
 	foreach ($resources as $key => $value) 
 	{
@@ -95,7 +103,24 @@ function showListOfLinks($id,$resop)
 			array('id' => $id, 'action' => 'showClass','class'=>$key)),$key); // Required
 		echo "&nbsp;&nbsp;&nbsp;";			
 	}
+	//link list owner 
+	if (has_capability('mod/resop:book', $context) )
+	{
+		echo $OUTPUT->heading(get_string('bookedby','resop'),4);
+		$resources = $DB->get_records_sql('SELECT DISTINCT name FROM {resop_resource_user} ru JOIN {resop_resop_user} rru '.
+										  'on ru.uid = rru.uid JOIN {resop_user} u on ru.uid=u.id ORDER BY name' );
+		foreach ($resources as $key => $value) 
+		{
+			echo $OUTPUT->action_link(new moodle_url('view.php',
+				array('id'=>$id,'action'=>'showBooker','name'=>$key)),$key);						
+			echo "&nbsp;&nbsp;&nbsp;";			
+		}
+	}
 }
+/*
+ * @param int $id id of modul
+ * @param string $select which class should be shown
+ * */
 function showClasses($id,$select = '%')
 {
 	global $DB,$OUTPUT,$urlparams;
@@ -108,6 +133,27 @@ function showClasses($id,$select = '%')
 	      'JOIN {resop_user} ru ON rru.uid=ru.id ' . 
 	      'WHERE rr.name' .$operator . "'$select' ORDER BY rr.name, rru.termin";
     $classes = $DB->get_records_sql($sql);
+	showEntriesTable($id, $classes, array('class'=>$select));	
+}
+/*
+ * @param int $id id of modul
+ * @param string $select which class should be shown
+ * */
+function showBookers($id,$name)
+{
+	global $DB,$urlparams;
+	$sql= 'SELECT rru.id, rru.termin, rru.time, rru.creation, rru.moun, rru.note, rr.name as rname, ru.name  as uname '.
+		  'FROM {resop_resource_user} rru ' .
+	      'JOIN {resop_resource} rr ON rru.resid=rr.id  '. 
+	      'JOIN {resop_user} ru ON rru.uid=ru.id ' . 
+	      "WHERE ru.name ='$name' ORDER BY rr.name, rru.termin";
+    $classes = $DB->get_records_sql($sql);
+	showEntriesTable($id, $classes, array('name'=>$name));
+}
+
+function showEntriesTable($id,$classes, $additionalUrlParams)
+{
+	global $OUTPUT, $urlparams;
     //print_r($classes);
     $iconDel  =  '<img class="smallicon" alt="' . get_string('delete') . '" src="' . $OUTPUT->pix_url('t/delete') . '" >'; 
     $iconEdit =  '<img class="smallicon" alt="' . get_string('edit')   . '" src="' . $OUTPUT->pix_url('t/edit')   . '" >'; 
@@ -123,15 +169,16 @@ function showClasses($id,$select = '%')
 							 get_string('edit','resop'));
 							 
     	$table->data = array();
+		
 		foreach ($classes as $key => $value) 
 		{
-			$linkDel =  $OUTPUT->action_link(new moodle_url('delete.php', 
-						array('id' => $id, 'action' => 'delete','delId'=>$value->id,
-						'fromAction' => $urlparams['action'], 'class'=> $urlparams['class'] )),$iconDel);					
+			$urlDel = array_merge(array('id' => $id, 'action' => 'delete','delId'=>$value->id,
+						'fromAction' => $urlparams['action'] ), $additionalUrlParams);
+			$linkDel =  $OUTPUT->action_link(new moodle_url('delete.php',$urlDel),$iconDel);					
 						//delete get's the old action and class to go back to this page	
-			$linkEdit = $OUTPUT->action_link(new moodle_url('view.php',
-						array('id'=>$id,'action'=>'edit','editId'=>$value->id,
-						'fromAction' => $urlparams['action'], 'class'=> $urlparams['class'])),$iconEdit);
+			$urlEdit = array_merge(array('id'=>$id,'action'=>'edit','editId'=>$value->id,
+						'fromAction' => $urlparams['action']), $additionalUrlParams);
+			$linkEdit = $OUTPUT->action_link(new moodle_url('view.php',$urlEdit),$iconEdit);
 			$table->data[] = array($value->rname,
 								   strftime('%a, %d.%m.%g %R',$value->termin),
 								   $value->time/60 . " Min.",
@@ -191,6 +238,7 @@ $urlparams = array('id' => $id,
                   'class' => optional_param('class','',PARAM_TEXT),
                   'delId' => optional_param('delId','',PARAM_INT),
                   'editId' => optional_param('editId','',PARAM_INT),
+                  'name' => optional_param('name','',PARAM_TEXT),
                   'fromAction' => optional_param('fromAction','',PARAM_TEXT), //woher kam der Aufruf
 				  );//second argument of optional_param is the value if the demanded value is not set
 
@@ -267,7 +315,9 @@ echo $OUTPUT->box_start();
 $context = context_module::instance($cm->id);
 
 if (has_capability('mod/resop:book', $context) 
-	&& ($urlparams['action'] != 'insert'))
+	&& ($urlparams['action'] != 'insert')
+	&& ($urlparams['action'] != 'edit')
+	)
 {
     showInsertLink($id);
 } 
@@ -277,11 +327,11 @@ if (empty($urlparams['action']))
 }
 
 
-if ($urlparams['action']=='showAll') //if a class is clicked
+if ($urlparams['action']=='showAll') 
 {
 	showClasses($id,'%');
 }
-else if ($urlparams['action']=='showClass')
+else if ($urlparams['action']=='showClass') //if a class is clicked
 {
 	showClasses($id,$urlparams['class']);	
 }
@@ -300,6 +350,10 @@ else if (has_capability('mod/resop:book', $context))
 	{
 		deleteEntry($urlparams);
 	}	
+	else if($urlparams['action'] == 'showBooker')
+	{
+		showBookers($id,$urlparams['name']);
+	}
 }
 echo $OUTPUT->box_end();
 
