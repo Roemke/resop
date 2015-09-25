@@ -46,9 +46,16 @@ $string['listofresources'] = 'List of resources';//both
 $string['listofresources_default_help'] = 'Default for the list of ressources, '.
 'Each line contains the name of one resource.<br>'.
 'If you want to manage writen exams, you should note also class names here.<br>'.
-'If you add a activity of type resource you can extend the list.'; //admin settings
-$string['listofresources_help'] = 'Resources for this activity.<br>'.
-                                 'You can add and remove ressources.'; //module settings
+'You can add or delete some entries here, it is only the set of default entries and can later be extended or reduced.'; 
+//admin settings
+$string['maxnumberexams']='Max numbers of written exams';
+$string['maxnumberexams_help'] = 'For type "written exams": Maximum number of written exams each week could be written.';
+$string['exportsalt']='Export salt ';
+$string['exportsalt_help']='Salt for ical export of resop. Improves security of authtoken. '.
+	'If you leave it empty, we generate a 60 character random value, '.
+	'if you change this, all tokens get invalid.';
+$string['listofresources_help'] = 'Resources for this activity.<br>'. 
+   'You surely need to  add and/or remove ressources.'; //module settings
 
 $string['listofdepartements']="Departements";
 $string['listofdepartements_help']='Departements, compare resources';
@@ -73,9 +80,11 @@ $string['insert'] = 'Insert an entry';
 $string['entries'] = 'Entries';
 $string['nodata']='no entries found';
 $string['class']='Class';
-$string['bookedby'] = 'booked for';
+$string['bookedby'] = 'booked for ';
+$string['bookedby_header']='booked for (over all instances)';
 $string['termin'] = 'Date';
 $string['edit'] = 'edit';
+$string['iCal'] = 'iCal Export';
 //--------------------------- Insert / Update Form
 $string['insertClass']='Class:';
 $string['choose']='Choose!';

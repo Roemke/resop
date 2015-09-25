@@ -4,7 +4,7 @@
  */
 require_once("$CFG->dirroot/mod/resop/db/ownDB.php");
 
-class admin_setting_configta_users extends admin_setting_configtextarea {
+class admin_setting_configta_resop_users extends admin_setting_configtextarea {
 
 	public function write_setting($data) {
         // your custom validation logic here
@@ -30,7 +30,7 @@ class admin_setting_configta_users extends admin_setting_configtextarea {
 /*
  * extend class admin_setting_configtextarea to check DB
  */
-class admin_setting_configta_departements extends admin_setting_configtextarea {
+class admin_setting_configta_resop_departements extends admin_setting_configtextarea {
 
 	public function write_setting($data) {
         // your custom validation logic here
@@ -50,5 +50,15 @@ class admin_setting_configta_departements extends admin_setting_configtextarea {
 		$data = implode("\n",$lines);
 		return parent::write_setting($data);
 		
+	}
+}
+
+class admin_setting_configtext_salt extends admin_setting_configtext {
+
+	public function write_setting($data) {
+        // your custom validation logic here
+        if  ($data == '')
+			$data = random_string(60);
+		return parent::write_setting($data);		
 	}
 }

@@ -72,3 +72,10 @@ ok, glaube ich habe das wieder hergestellt
 insert gebastelt, kontrolle ob terminueberschneidung
 in relations tabelle noch eine id einfuegen, sonst gibt
 es zuviel Aerger - beim insert und bei der Abfrage
+
+2015-09-25: nicht mehr so recht zum dokumentieren gekommen - wie so oft :-)
+einiges fertig gebastelt, Zahl der KA pro Woche muss geprüft werden, 
+nein, nehme das erstmal raus, da ja auch Tests und Abgabearbeiten eingetragen
+werden können. 
+bastele an ical export,
+web-service ist unnötig, besser per export.php analog zu calendar modul

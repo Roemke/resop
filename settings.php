@@ -39,17 +39,25 @@ if ($ADMIN->fulltree) { //scheint ueblich
  //user                                                       
     $name =        get_string('listofusers', 'mod_resop');
     $description = get_string('listofusers_help', 'mod_resop');	
-    $settings->add(new admin_setting_configta_users('resop_users',
+    $settings->add(new admin_setting_configta_resop_users('resop_users',
                                                     $name,
                                                     $description,""));
 
   //departements
     $name =        get_string('listofdepartements', 'mod_resop');
     $description = get_string('listofdepartements_help', 'mod_resop');	
-    $settings->add(new admin_setting_configta_departements('resop_departements',
+    $settings->add(new admin_setting_configta_resop_departements('resop_departements',
                                                     $name,
                                                     $description,""));
-	 
+	
+	$name = get_string('exportsalt','mod_resop');
+	$description = get_string('exportsalt_help','mod_resop');	
+	$settings->add(new admin_setting_configtext_salt('resop_exportsalt',$name,$description,'')); 
+  
+   //maximal number of written exams per week, no not used 
+    // $name = get_string('maxnumberexams','mod_resop');
+	
+   //salt for ical export 	
 	 //speichern passiert automatisch wenn der button gedrueckt wird
     //kann das auch spaeter abfragen
 }

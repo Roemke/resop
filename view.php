@@ -92,21 +92,22 @@ function showListOfLinks($id,$resop)
 	echo $OUTPUT->heading(get_string('entries','resop'),4);
 	echo $OUTPUT->action_link(new moodle_url('view.php', array('id' => $id, 'action' => 'showAll')),
 	 		get_string('showall','resop')); // Required
-	//linkliste Klassen/Resources
+	//linkliste Klassen/Resources - specific for this resop instance
 	$text = ($resop->type == 'typeexam') ? get_string('resExam','resop') : get_string('resFree','resop');	 		
 	echo $OUTPUT->heading($text,4);
 	$resources = $DB->get_records_sql('SELECT DISTINCT name FROM {resop_resource_user} ru JOIN {resop_resource} rr '
-		. " ON ru.resid=rr.id  WHERE ru.actid={$resop->id} ORDER BY name");//insance
+		. " ON ru.resid=rr.id  WHERE ru.actid={$resop->id} ORDER BY name");
+		//ok, should only be the resources which are handled in this resop instance
 	foreach ($resources as $key => $value) 
 	{
 		echo $OUTPUT->action_link(new moodle_url('view.php', 
 			array('id' => $id, 'action' => 'showClass','class'=>$key)),$key); // Required
 		echo "&nbsp;&nbsp;&nbsp;";			
 	}
-	//link list owner 
+	//link list owner over all instances of resop modul
 	if (has_capability('mod/resop:book', $context) )
 	{
-		echo $OUTPUT->heading(get_string('bookedby','resop'),4);
+		echo $OUTPUT->heading(get_string('bookedby_header','resop'),4);
 		$resources = $DB->get_records_sql('SELECT DISTINCT name FROM {resop_resource_user} ru JOIN {resop_resop_user} rru '.
 										  'on ru.uid = rru.uid JOIN {resop_user} u on ru.uid=u.id ORDER BY name' );
 		foreach ($resources as $key => $value) 
@@ -123,7 +124,16 @@ function showListOfLinks($id,$resop)
  * */
 function showClasses($id,$select = '%')
 {
-	global $DB,$OUTPUT,$urlparams;
+	global $DB,$OUTPUT,$urlparams, $USER, $CFG;
+	$authtoken =  sha1($USER->id . $DB->get_field('user', 'password', array('id' => $USER->id)) . $CFG->resop_exportsalt);
+    
+	$urlExport = array('id' => $id,'authtoken'=>$authtoken,'type	'=>'class','name'=>$select);
+	$linkExport = $OUTPUT->action_link(new moodle_url('export.php',$urlExport),
+							'iCal',null,array('title'=>get_string('iCal','resop'),'class'=>'ical-link'));
+	//$OUTPUT->action_link you find under lib/outputrenderers.php - but I don't understand action (set to null is default)					
+						//delete get's the old action and class to go back to this page	
+	echo $linkExport;    
+    
 	$operator=' LIKE ';
 	if ($select!='%')
 		$operator = '='; 
@@ -141,7 +151,15 @@ function showClasses($id,$select = '%')
  * */
 function showBookers($id,$name)
 {
-	global $DB,$urlparams;
+	global $DB,$urlparams, $USER, $CFG, $OUTPUT;
+	$authtoken =  sha1($USER->id . $DB->get_field('user', 'password', array('id' => $USER->id)) . $CFG->resop_exportsalt);   
+	$urlExport = array('id' => $id,'authtoken'=>$authtoken,'type	'=>'booker','name'=>$name);
+	$linkExport = $OUTPUT->action_link(new moodle_url('export.php',$urlExport),
+							'iCal',null,array('title'=>get_string('iCal','resop'),'class'=>'ical-link'));
+	//$OUTPUT->action_link you find under lib/outputrenderers.php - but I don't understand action (set to null is default)					
+						//delete get's the old action and class to go back to this page	
+	echo $linkExport;    
+	
 	$sql= 'SELECT rru.id, rru.termin, rru.time, rru.creation, rru.moun, rru.note, rr.name as rname, ru.name  as uname '.
 		  'FROM {resop_resource_user} rru ' .
 	      'JOIN {resop_resource} rr ON rru.resid=rr.id  '. 

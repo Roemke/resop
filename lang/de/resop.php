@@ -46,7 +46,14 @@ $string['listofresources'] = 'Liste der Ressourcen'; //beides
 $string['listofresources_default_help'] = 'Vorgabe für die Liste der ressourcen welche verfügbar sein sollen, '.
 'Jede Zeile enthält einer Ressource.<br>'.
 'Will man Klassenarbeiten verwalten, bietet es sich an, hier die Klassen aufzuführen.<br>'.
-'Fügt man eine Resop-Aktivität hinzu kann man die Liste erweitern'; //admin setting
+'Dies sind die vorgegebenen Einträge, diese können später für jedes Modul erweitert oder reduziert werden.'; 
+//admin setting
+$string['maxnumberexams']='Maximale Anzahl von Klassenarbeiten';
+$string['maxnumberexams_help'] = 'Für den Typ Klassenarbeiten: Die Maximalzahl von Arbeiten, die pro Woche eingetragen werden können.';
+$string['exportsalt']='Export salt ';
+$string['exportsalt_help']='Dieser Zufallstext (hash salt) wird benutzt, um die Sicherheit der Authentifikationstoken für '. 
+	'den Kalenderexport zu erhöhen. Bitte beachten Sie, dass alle aktuellen Token ungültig werden, ' . 
+	'wenn Sie diesen Text ändern. Wenn Sie das Feld leer lassen, wird ein 60 Zeichen Zufallswert erstellt.';
 $string['listofresources_help'] = 'Resourcen, die in dieser Aktivität verwendet werden können.<br>'.
 								  'Sie können Elemente löschen und / oder hinzufügen. '; //module settings
 
@@ -74,8 +81,10 @@ $string['entries'] = 'Einträge';
 $string['nodata']='keine Einträge gefunden';
 $string['class']='Klasse';
 $string['bookedby'] = 'gebucht für ';
+$string['bookedby_header']='gebucht für (über alle I	nstanzen)';
 $string['termin'] = 'Termin';
 $string['edit'] = 'bearbeiten';
+$string['iCal'] = 'iCal Export';
 //--------------------------- Insert / Update Form
 $string['insertClass']='Klasse';
 $string['choose']='Bitte wählen!';
