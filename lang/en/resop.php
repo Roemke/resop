@@ -85,6 +85,9 @@ $string['bookedby_header']='booked for (over all instances)';
 $string['termin'] = 'Date';
 $string['edit'] = 'edit';
 $string['iCal'] = 'iCal Export';
+$string['iCal_help'] = 'A iCal-File will be generated. You can import this file into your calendar or copy the link '.
+      '(right mouse button) and paste it into some other calendar which can import an url. '.
+      'E.g. in Google Calendar you can add via URL.';
 //--------------------------- Insert / Update Form
 $string['insertClass']='Class:';
 $string['choose']='Choose!';

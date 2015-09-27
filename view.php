@@ -124,26 +124,19 @@ function showListOfLinks($id,$resop)
  * */
 function showClasses($id,$select = '%')
 {
-	global $DB,$OUTPUT,$urlparams, $USER, $CFG;
+	global $DB,$OUTPUT,$USER, $CFG, $resop; //resop->id : see note in showBookers
 	$authtoken =  sha1($USER->id . $DB->get_field('user', 'password', array('id' => $USER->id)) . $CFG->resop_exportsalt);
-    
-	$urlExport = array('id' => $id,'authtoken'=>$authtoken,'type	'=>'class','name'=>$select);
-	$linkExport = $OUTPUT->action_link(new moodle_url('export.php',$urlExport),
+    $className = $select == '%' ? 'all' : $select;
+	//% in url does not work - strange, it should its encoded as %25 which is right
+	$urlExport = array('id' => $id,'resopId'=>$resop->id,'userid'=>$USER->id,'authtoken'=>$authtoken,'type'=>'class','name'=>$className);
+	$linkExport = $OUTPUT->action_link(new moodle_url('exportIcal.php',$urlExport),
 							'iCal',null,array('title'=>get_string('iCal','resop'),'class'=>'ical-link'));
 	//$OUTPUT->action_link you find under lib/outputrenderers.php - but I don't understand action (set to null is default)					
 						//delete get's the old action and class to go back to this page	
 	echo $linkExport;    
-    
-	$operator=' LIKE ';
-	if ($select!='%')
-		$operator = '='; 
-	$sql= 'SELECT rru.id, rru.termin, rru.time, rru.creation, rru.moun, rru.note, rr.name as rname, ru.name  as uname '.
-		  'FROM {resop_resource_user} rru ' .
-	      'JOIN {resop_resource} rr ON rru.resid=rr.id  '. 
-	      'JOIN {resop_user} ru ON rru.uid=ru.id ' . 
-	      'WHERE rr.name' .$operator . "'$select' ORDER BY rr.name, rru.termin";
-    $classes = $DB->get_records_sql($sql);
-	showEntriesTable($id, $classes, array('class'=>$select));	
+    echo $OUTPUT->help_icon('iCal','resop');
+	$classEntries = ResopDB::getClassEntries($select, $resop->id);
+	showEntriesTable($id, $classEntries, array('class'=>$select));	
 }
 /*
  * @param int $id id of modul
@@ -151,22 +144,20 @@ function showClasses($id,$select = '%')
  * */
 function showBookers($id,$name)
 {
-	global $DB,$urlparams, $USER, $CFG, $OUTPUT;
+	global $DB, $USER, $CFG, $OUTPUT, $resop; //thought id and resop id are the same but they are not. 
+	//I don't understand why, so what resop->id is used in my internal db-tables and id is the id of an instance
+	//inside of a course
 	$authtoken =  sha1($USER->id . $DB->get_field('user', 'password', array('id' => $USER->id)) . $CFG->resop_exportsalt);   
-	$urlExport = array('id' => $id,'authtoken'=>$authtoken,'type	'=>'booker','name'=>$name);
-	$linkExport = $OUTPUT->action_link(new moodle_url('export.php',$urlExport),
+	$urlExport = array('id' => $id,'resopId'=>$resop->id,'userid'=>$USER->id,'authtoken'=>$authtoken,'type'=>'booker','name'=>$name);
+	$linkExport = $OUTPUT->action_link(new moodle_url('exportIcal.php',$urlExport),
 							'iCal',null,array('title'=>get_string('iCal','resop'),'class'=>'ical-link'));
 	//$OUTPUT->action_link you find under lib/outputrenderers.php - but I don't understand action (set to null is default)					
 						//delete get's the old action and class to go back to this page	
-	echo $linkExport;    
-	
-	$sql= 'SELECT rru.id, rru.termin, rru.time, rru.creation, rru.moun, rru.note, rr.name as rname, ru.name  as uname '.
-		  'FROM {resop_resource_user} rru ' .
-	      'JOIN {resop_resource} rr ON rru.resid=rr.id  '. 
-	      'JOIN {resop_user} ru ON rru.uid=ru.id ' . 
-	      "WHERE ru.name ='$name' ORDER BY rr.name, rru.termin";
-    $classes = $DB->get_records_sql($sql);
-	showEntriesTable($id, $classes, array('name'=>$name));
+	echo $linkExport; 
+	echo $OUTPUT->help_icon('iCal','resop');
+	   
+	$bookerEntries = ResopDB::getBookerEntries($name);
+	showEntriesTable($id, $bookerEntries, array('name'=>$name));
 }
 
 function showEntriesTable($id,$classes, $additionalUrlParams)
@@ -216,34 +207,6 @@ function showInsertLink($id)
 	echo '<div style=" display: inline-block; position: relative; top: -30px; float: right; margin-bottom:5px;"><a href="view.php?id='.$id . '&action=insert">' 
     	. get_string('insert','resop') .  '</a></div>';	
 }
-//delete an entry
-function deleteEntry(&$urlparams)
-{
-	global $DB;
-	$delId = $urlparams['delId'];
-	if (isset($delId))
-	{
-		$DB->delete_records('resop_resource_user', array( "id" => $delId));
-		$from = explode('|', $urlparams['fromAction']);
-		if ($from[0] == 'showAll')
-		{
-			$urlparams['action'] = 'showAll'; //from action will later be set to action ... very q&d
-			showClasses($urlparams['id']);
-		}
-		else if ($from[0] == 'showClass')
-		{
-			$urlparams['action'] = 'showClass';
-			$urlparams['class'] = $from[1];
-			showClasses($urlparams['id'],$from[1]);
-		}
-				
-	}
-	else 
-	{
-		echo "strange - you like to delete an entry without giving the id";	
-	}
-}
-
 //-----------------------------------------------------
 
 //$id = optional_param('id', 0, PARAM_INT); // Course_module ID, or
@@ -364,10 +327,6 @@ else if (has_capability('mod/resop:book', $context))
 		$editId = $urlparams['editId'];
 		showInsEditForm($url,$id,$resop,$editId);
 	}
-	else if($urlparams['action'] == 'delete')
-	{
-		deleteEntry($urlparams);
-	}	
 	else if($urlparams['action'] == 'showBooker')
 	{
 		showBookers($id,$urlparams['name']);

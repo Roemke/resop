@@ -45,6 +45,7 @@ function deleteEntry(&$urlparams)
 	}
 }
 
+
 function outputIntro($url,$course,$cm,$resop)
 {
 	global $PAGE, $OUTPUT;

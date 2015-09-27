@@ -56,7 +56,45 @@
 				}	
 			}
 		}
-		
+
+		/*
+		 * @param string $name name of class
+		 * @param int $resopId id of resop-instance
+		 * @return records of entries which belong to class and resop-instance 
+		 * */
+		public static function getClassEntries($name,$resopId)
+		{
+			global $DB;		
+			$operator=' LIKE ';
+			if ($name!='%')
+				$operator = ' = '; 
+			$sql= 'SELECT rru.id, rru.termin, rru.time, rru.creation, rru.moun, rru.note, rr.name as rname, ru.name  as uname '.
+				  'FROM {resop_resource_user} rru ' .
+			      'JOIN {resop_resource} rr ON rru.resid=rr.id  '. 
+			      'JOIN {resop_user} ru ON rru.uid=ru.id ' . 
+			      'WHERE rr.name' . " $operator '$name' " . 
+			      " AND rr.actid=$resopId " .
+			      " ORDER BY rr.name, rru.termin";
+		    
+		    $classEntries = $DB->get_records_sql($sql);
+			return $classEntries;
+		}
+			
+		/*
+		 * @param string $name name of booker
+		 * @return records of entries which belong to booker (done over all resop instances) 
+		 * */
+		public static function getBookerEntries($name)
+		{
+			global $DB; 
+			$sql= 'SELECT rru.id, rru.termin, rru.time, rru.creation, rru.moun, rru.note, rr.name as rname, ru.name  as uname '.
+				  'FROM {resop_resource_user} rru ' .
+			      'JOIN {resop_resource} rr ON rru.resid=rr.id  '. 
+			      'JOIN {resop_user} ru ON rru.uid=ru.id ' . 
+			      "WHERE ru.name ='$name' ORDER BY rr.name, rru.termin";
+		    $entries = $DB->get_records_sql($sql);
+			return $entries;
+		}
 		//liefert array mit index aus der DB und name aus der DB
 		public static function getDepartements()
 		{
