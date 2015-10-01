@@ -90,7 +90,7 @@ class mod_resop_mod_form extends moodleform_mod {
 		$usdep = $mform->addElement('select', 'resop_users', get_string('listofusers', 'resop'), $users, 
 		  array('size'=>20));
 		$usdep->setMultiple(true);
-		$usdep->setSelected(array_keys($users));
+		//$usdep->setSelected(array_keys($users));
 		
 		$mform->addHelpButton('resop_users', 'listofusers', 'resop'); //_help wird automatisch angehaengt
         $mform->addRule('resop_users',null,'required');
