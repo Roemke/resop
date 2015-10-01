@@ -57,11 +57,12 @@ $string['exportsalt_help']='Salt for ical export of resop. Improves security of 
 $string['listofresources_help'] = 'Resources for this activity.<br>'. 
    'You surely need to  add and/or remove ressources.'; //module settings
 
+$string['listofusers']="User, select multiple with cmd/strg + mouse click";
+$string['listofusers_help']='User who can book a resource, select multiple entries.';
+$string['listofusersSet']="Users, which are later available";
+$string['listofusersSet_help']='Users who should be able to book a resource, later the admin has to choose from this entries';
 $string['listofdepartements']="Departements";
 $string['listofdepartements_help']='Departements, compare resources';
-
-$string['listofusers']="User";
-$string['listofusers_help']='User who can book a resource, select multiple entries.';
 $string['resoptypestring'] = 'Type';
 $string['departement']='Departement';
 

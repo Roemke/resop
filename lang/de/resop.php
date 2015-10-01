@@ -57,9 +57,10 @@ $string['exportsalt_help']='Dieser Zufallstext (hash salt) wird benutzt, um die 
 $string['listofresources_help'] = 'Resourcen, die in dieser Aktivität verwendet werden können.<br>'.
 								  'Sie können Elemente löschen und / oder hinzufügen. '; //module settings
 
-$string['listofusers']="Nutzer";
-$string['listofusers_help']='Nutzer, die eine Ressource buchen können, Multiselect sinnvoll.';
-
+$string['listofusers']="Nutzer, mehrere wählen (Strg/Cmd + Mausklick";
+$string['listofusers_help']='Nutzer, die eine Ressource buchen können, mehrere mit Strg/cmd + Mausklick wählen.';
+$string['listofusersSet']="Users, which are later available";
+$string['listofusersSet_help']='Users who should be able to book a resource, later the admin has to choose from this entries';
 $string['listofdepartements']="Abteilungen";
 $string['listofdepartements_help']='Abteilungen, vergleiche Resourcen';
 $string['resoptypestring'] = 'Art';

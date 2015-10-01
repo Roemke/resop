@@ -87,7 +87,8 @@ class mod_resop_mod_form extends moodleform_mod {
 		
 		//Wer kann buchen
 		$users =  ResopDB::getUser();//
-		$usdep = $mform->addElement('select', 'resop_users', get_string('listofusers', 'resop'), $users);
+		$usdep = $mform->addElement('select', 'resop_users', get_string('listofusers', 'resop'), $users, 
+		  array('size'=>20));
 		$usdep->setMultiple(true);
 		$usdep->setSelected(array_keys($users));
 		
