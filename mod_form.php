@@ -44,7 +44,7 @@ class mod_resop_mod_form extends moodleform_mod {
      * Defines forms elements
      */
     public function definition() {
-		global $CFG;
+		global $CFG, $DB;
         $mform = $this->_form;
 
         // Adding the "general" fieldset, where all the common settings are showed.
@@ -74,23 +74,36 @@ class mod_resop_mod_form extends moodleform_mod {
         //ressource-Type, nur klassenarbeit und andere bisher moeglich        
         $RES_TYPES = array('typeall' => get_string('typeall','resop'),
         					 'typeexam' => get_string('typeexam','resop'));
-        $restype = $mform->addElement('select', 'resop_type', get_string('resoptypestring', 'resop'), $RES_TYPES);
-        $restype->setSelected('typeexam');        
-  	    //restype fuehrt zu name restype und id id_restype
-		//-------------------------------------
-		//Abteilung
-		$departements =  ResopDB::getDepartements();//
-		$resdep = $mform->addElement('select', 'resop_departement', get_string('departement', 'resop'), $departements);
-		//klappt, baut aus dem schluessel in $departements den value des select-feldes
-		$depKeys = array_keys($departements);
-		$resdep->setSelected($depKeys[0]);
-		
+        if (empty($this->current->id)) //nicht editierbare elemente, nur beim hinzufügen
+        {
+        	$restype = $mform->addElement('select', 'resop_type', get_string('resoptypestring', 'resop'), $RES_TYPES);
+        	$restype->setSelected('typeexam');        
+	  	    //restype fuehrt zu name restype und id id_restype
+			//-------------------------------------
+			$departements =  ResopDB::getDepartements();//
+			$resdep = $mform->addElement('select', 'resop_departement', get_string('departement', 'resop'), $departements);
+			//klappt, baut aus dem schluessel in $departements den value des select-feldes
+			$depKeys = array_keys($departements);
+			$resdep->setSelected($depKeys[0]);
+		}
+		else 
+		{
+			$abt = $DB->get_record_select('resop_abt',"id={$this->current->id_abt}",$params=null, $fields='name');
+			$mform->addElement('html', '<p style="font-weight: bold;">' . get_string('departement', 'resop') . 
+								': ' . $abt->name . get_string('noteditable','resop') . '</p>'); 	
+			$type = get_string($this->current->type,'resop');	
+			$mform->addElement('html', '<p style="font-weight: bold;">' . get_string('resoptypestring', 'resop') . 
+								': ' . $type . get_string('noteditable','resop') . '</p>'); 	
+		}
 		//Wer kann buchen
-		$users =  ResopDB::getUser();//
-		$usdep = $mform->addElement('select', 'resop_users', get_string('listofusers', 'resop'), $users, 
-		  array('size'=>20));
+		$user =  ResopDB::getUser();//
+		//echo "Current is {$this->current->id} <br>";
+		$userSelected = empty($this->current->id) ? '' : ResopDB::getUser($this->current->id);
+		$usdep = $mform->addElement('select', 'resop_users', get_string('listofusers', 'resop'), $user, 
+		  							array('size'=>20));
 		$usdep->setMultiple(true);
-		//$usdep->setSelected(array_keys($users));
+		if (!empty($userSelected))
+			$usdep->setSelected(array_keys($userSelected));
 		
 		$mform->addHelpButton('resop_users', 'listofusers', 'resop'); //_help wird automatisch angehaengt
         $mform->addRule('resop_users',null,'required');
@@ -100,8 +113,11 @@ class mod_resop_mod_form extends moodleform_mod {
 		                    get_string("listofresources", "resop"), 'wrap="virtual" rows="15" cols="50"'); 
 		$mform->addHelpButton('resop_resources', 'listofresources', 'resop'); //_help wird automatisch angehaengt
         $mform->addRule('resop_resources',null,'required');
-		$mform->setDefault('resop_resources',$CFG->resop_resources);
-				                  		        
+		if (empty($this->current->id))
+			$mform->setDefault('resop_resources',$CFG->resop_resources);
+		else 		
+			$mform->setDefault('resop_resources',implode("\n",ResopDB::getResources($this->current->id)));			
+			                  		        
         // Add standard grading elements.
         //$this->standard_grading_coursemodule_elements();
 
@@ -111,4 +127,22 @@ class mod_resop_mod_form extends moodleform_mod {
         // Add standard buttons, common to all modules.
         $this->add_action_buttons();
     }
+
+    //Custom validation should be added here
+    /*
+	 * @param array $data data from the form.
+     * @param array $files files uploaded.
+     * @return array of errors.
+	 * 
+	 */
+	public function validation($data,$files)
+	{
+		$errors = parent::validation($data, $files);
+		if (empty($data['resop_users']))
+			$errors['resop_users'] = get_string('noentryError','resop');			
+		$res = trim($data['resop_resources']);
+		if (empty($res))
+			$errors['resop_resources'] = get_string('noentryError','resop');			
+		return $errors;	
+	} 
 }

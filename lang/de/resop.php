@@ -73,6 +73,8 @@ $string['typeall'] = 'Beliebige Ressource wählbar (funktioniert noch nicht)';
 $string['typeexam'] = 'Klassenarbeiten';
 $string['abteilungen']="Abteilung wählen.";
 $string['abtheader']="Abteilung";
+$string['noentryError']="mindestens ein Eintrag nötig";
+$string['noteditable']=" (nicht editierbar)";
 //--------------- links in view.php / view.php  --------------
 $string['showall']='Zeige alle Einträge';
 $string['resExam']='Klassen';

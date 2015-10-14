@@ -73,7 +73,9 @@ $string['typeall'] = 'every resource (does not work)';
 $string['typeexam'] = 'only written examina';
 $string['abteilungen']="Choose departement.";
 $string['abtheader']="Departements";
-//--------------- view.php --------------
+$string['noentryError']="one entry necessary";
+$string['noteditable']=" (not editable)";
+//--------------- view.php -----------	---
 $string['showall']='Show all reservations';
 $string['resExam']='Classes';
 $string['resFree']='Resources';

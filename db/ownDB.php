@@ -102,35 +102,44 @@
 			return $DB->get_records_menu('resop_abt');
 		}
 		//liefert array mit index aus der DB und name aus der DB
-		public static function getUser()
+		public static function getUser($id = null)
 		{
 			global $DB;
-			return $DB->get_records_menu('resop_user');
+			$res = null;
+			if ($id===null)
+				$res = $DB->get_records_menu('resop_user');
+			else 
+			{ //get users which are already choosen for this instance
+				$sql = "SELECT DISTINCT ru.id, ru.name FROM {resop_resop_user} rru JOIN {resop_user} ru ON rru.uid=ru.id " .
+					   " WHERE rru.actid=? ";
+				$res = $DB->get_records_sql_menu($sql,array($id));	
+			}
+			return $res;
+		}
+		//liefert array mit index aus der DB und name aus der DB
+		public static function getResources($id = null)
+		{
+			global $DB;
+			$res = null;
+			if ($id === null)
+				$sql = "SELECT DISTINCT id, name FROM {resop_resource}  ";
+			else
+				$sql = "SELECT DISTINCT id, name FROM {resop_resource}   " .
+					   " WHERE actid=? ";
+				
+			$res = $DB->get_records_sql_menu($sql,array($id));	
+			
+			return $res;
 		}
 		
-		public static function insertResop(stdClass &$resop, $formContent)
+		/*
+		 * @param array $resources array with resources as key=> value pairs
+		 * @param object $resop actual resop instance
+		 * inserts resources from array		 
+		 * */
+		private static function insertResourcesFromArr($resources,$resop)
 		{
-			global $DB;	
-			$abt = $formContent->resop_departement;
-			$resop->abt_id = $abt ;
-			$resop->type =  $formContent->resop_type;  	
-    		$resop->id = $DB->insert_record('resop', $resop);
-		
-			$resources = explode("\n",$formContent->resop_resources); 
-			array_walk($resources, create_function('&$val', '$val = trim($val);'));
-			$resources = array_filter($resources); //leere weg			
-			$users = $formContent->resop_users;
-			$records  = array();
-			foreach ($users as $key => $value) {
-				$record = new stdClass();
-				$record->actid = $resop->id;
-				$record->uid = $value;
-				$records[]=$record;
-			}
-			$DB->insert_records('resop_resop_user',$records);
-			//schnellste Methode und behebt problem, das resop_resop_users keine id hat. 
-			//ressourcen eintragen
-			
+			global $DB;
 			$records = array();
 			foreach ($resources as $key => $value)
 			{
@@ -140,9 +149,98 @@
 				$record->actid = $resop->id;
 				$record->anzahl = 1; //erstmal  auf Verdacht eingebaut
 				$records[]=$record;
-			}										
-			$DB->insert_records('resop_resource',$records);
+			}	
+			if (count($records) > 0)									
+				$DB->insert_records('resop_resource',$records);
 		}
+
+		/*
+		 * @param array $users array with users as key=> value pairs, value is user id
+		 * @param object $resop actual resop instance
+		 * inserts user from array		 
+		 * */
+		private static function insertUserFromArr($users,$resop)
+		{
+			global $DB;
+			$records  = array();
+			foreach ($users as $key => $value) {
+				$record = new stdClass();
+				$record->actid = (int) $resop->id;
+				$record->uid = (int) $value;
+				$records[]=$record;
+			}
+			if (count($records) > 0)									
+				$DB->insert_records('resop_resop_user',$records);
+			//schnellste Methode und behebt problem, das resop_resop_users keine id hat. 
+			//ressourcen eintragen
+			
+		}
+		public static function insertResop(stdClass &$resop, $formContent)
+		{
+			global $DB;	
+			$abt = $formContent->resop_departement;
+			$resop->id_abt = $abt ;
+			$resop->type =  $formContent->resop_type;  	
+    		$resop->id = $DB->insert_record('resop', $resop);
+		
+			$resources = explode("\n",$formContent->resop_resources); 
+			array_walk($resources, create_function('&$val', '$val = trim($val);'));
+			$resources = array_filter($resources); //leere weg			
+			ResopDB::insertResourcesFromArr($resources,$resop);			
+			$users = $formContent->resop_users;
+			ResopDB::insertUserFromArr($users,$resop);
+		}
+
+		public static function updateResop(stdClass &$resop, $formContent)
+		{
+			global $DB;	
+			//$DB->set_debug(true);
+			//add resources which are used in this instance, need to keep the keys
+			$resourcesUsed=$DB->get_records_sql('SELECT DISTINCT rr.id, rr.name, rr.actid FROM {resop_resource_user} rru JOIN {resop_resource} rr ' .
+												 'ON rru.resid=rr.id WHERE rru.actid=? ',array($resop->id)); 
+												 //array of objects			
+			$resourcesKnown=$DB->get_records_sql_menu('SELECT DISTINCT id,name FROM {resop_resource} ' .
+												 ' WHERE actid=? ',array($resop->id)); 
+												 //array with id as key and name as value
+			
+			$resneu = explode("\n",$formContent->resop_resources); 
+			array_walk($resneu, function(&$val)  {$val = trim($val);});
+			$resneu = array_filter($resneu); //leere weg			
+			
+			//construct list of resources which should be not deleted if existent
+			$noDelete = implode("','",$resneu);
+			$noDelete = "'" . $noDelete . "'"; //list of elements in ' '
+			$sql = array();
+			foreach ($resourcesUsed as $key => $value)
+			{
+				$noDelete .= ",'{$value->name}'"; //maybe double name - doesn't matter				
+			}
+			$sql = "DELETE FROM {resop_resource} WHERE name NOT IN ($noDelete) AND actid={$resop->id} ";
+			$DB->execute($sql);
+			//construct array of new resources
+			//need all entries of $resneu which are not in $resourcesKnown
+			$resneu = array_diff($resneu,$resourcesKnown);
+			
+			ResopDB::insertResourcesFromArr($resneu,$resop);
+			
+									 		
+			//handle edit of users
+			//get the already used user-ids, we don't delete them
+			$usedUids=array_keys($DB->get_records_sql_menu('SELECT DISTINCT uid, actid FROM {resop_resource_user}  ' .
+												 ' WHERE actid=? ',array($resop->id)));
+			 												 
+			$newUids = array_map( function($v) {return (int)$v ; }, $formContent->resop_users);
+			$noDelete = array_merge($usedUids,$newUids);
+			$noDelete = implode(',',$noDelete);
+			//resop_resop_user: which users can be used in this instance (beziehungstabelle / relation table)
+			$sql = "DELETE FROM {resop_resop_user} WHERE uid NOT IN ($noDelete) AND actid={$resop->id} ";
+			$DB->execute($sql);
+			$knownUids = array_keys(ResopDB::getUser($resop->id));
+			//var_dump($knownUids);echo "<br>";			
+			$newUids = array_diff($newUids,$knownUids);
+			ResopDB::insertUserFromArr($newUids,$resop);
+		}
+
 
 		/*
 		 * @param int $id id of resop modul

@@ -111,6 +111,8 @@ function resop_update_instance(stdClass $resop, mod_resop_mod_form $mform = null
     // You may have to add extra stuff in here.
 
     $result = $DB->update_record('resop', $resop);
+    $formContent = $mform->get_data();
+    ResopDB::updateResop($resop,$formContent);
 
     resop_grade_item_update($resop);
     return $result;
