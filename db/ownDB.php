@@ -74,7 +74,8 @@
 			      'JOIN {resop_user} ru ON rru.uid=ru.id ' . 
 			      'WHERE rr.name' . " $operator '$name' " . 
 			      " AND rr.actid=$resopId " .
-			      " ORDER BY rr.name, rru.termin";
+			      " ORDER BY rru.termin";
+			      //" ORDER BY rr.name, rru.termin";
 		    
 		    $classEntries = $DB->get_records_sql($sql);
 			return $classEntries;

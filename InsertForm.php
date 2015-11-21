@@ -69,9 +69,10 @@ class ResopInsEditMoodleForm extends moodleform
     {
     	$errors = parent::validation($data, $files);
 		$date = $data['starttime'];
-		if ($date < time())
-			$errors['starttime'] = get_string('dateError','resop');
-        return $errors;
+		//if ($date < time())
+		//	$errors['starttime'] = get_string('dateError','resop');
+    //    return $errors;
+    //zumindest zeitweise termine in der Vergangenheit
     }
 	
 } 
