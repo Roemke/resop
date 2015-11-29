@@ -19,7 +19,7 @@
  *
  * All the core Moodle functions, neeeded to allow the module to work
  * integrated in Moodle should be placed here.
- *
+ * 
  * All the resop specific functions, needed to implement all the module
  * logic, should go to locallib.php. This will help to save some memory when
  * Moodle is performing actions across all modules.
@@ -131,15 +131,17 @@ function resop_update_instance(stdClass $resop, mod_resop_mod_form $mform = null
 function resop_delete_instance($id) {
     global $DB;
 
-    if (! $resop = $DB->get_record('resop', array('id' => $id))) {
+    file_put_contents("/tmp/a", "call to delete instance\n", FILE_APPEND);
+	if (! $resop = $DB->get_record('resop', array('id' => $id))) {
         return false;
     }
+    file_put_contents("/tmp/a", "call to delete instance in progress\n", FILE_APPEND);
 
     // Delete any dependent records here.
 
-    $DB->delete_records('resop', array('id' => $resop->id));
 	ResopDB::deleteResop($resop->id);
-    resop_grade_item_delete($resop);
+    $DB->delete_records('resop', array('id' => $resop->id));
+    //resop_grade_item_delete($resop);
 
     return true;
 }

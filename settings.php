@@ -37,8 +37,8 @@ if ($ADMIN->fulltree) { //scheint ueblich
                                                     $description,""));
                                                     //"abc"));//var_export($result,true)));
  //user                                                       
-    $name =        get_string('listofusers', 'mod_resop');
-    $description = get_string('listofusers_help', 'mod_resop');	
+    $name =        get_string('listofusersSet', 'mod_resop');
+    $description = get_string('listofusersSet_help', 'mod_resop');	
     $settings->add(new admin_setting_configta_resop_users('resop_users',
                                                     $name,
                                                     $description,""));

@@ -16,7 +16,8 @@
 
 /**
  * The main resop configuration form
- *
+ * shown, if somebody adds this module 
+ * 
  * It uses the standard core Moodle formslib. For more info about them, please
  * visit: http://docs.moodle.org/en/Development:lib/formslib.php
  *
