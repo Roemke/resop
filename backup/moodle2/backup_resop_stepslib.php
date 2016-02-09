@@ -66,8 +66,8 @@ class backup_resop_activity_structure_step extends backup_activity_structure_ste
 												  'creation','termin','moun','note','time')); 	
 
 		$usedUsers = new backup_nested_element('usedUsers');//mdl_resop_resop_user, alle s. unten bei source
-		$usedUser = new backup_nested_element('usedUser', array('uid'));//die uid reicht
-        //bei fester actid muesste uid eindeutig sein!
+		$usedUser = new backup_nested_element('usedUser', array('uid'),array('actid'));//die uid reicht an sich
+        //bei fester actid muesste uid eindeutig sein! lasse ich actid jedoch weg, speichert er nichts
 		$resources = new backup_nested_element('resources'); //mdl_resop_resource
 		$resource = new backup_nested_element('resource', array('id'), array('actid','name','anzahl'));
 		 		  
